@@ -1,4 +1,17 @@
 FactoryBot.define do
+  factory :power_user do
+    user_id 1
+    vote_power 1
+    poll_category nil
+  end
+  factory :poll_category do
+    name "MyString"
+    pass_percentage 1
+    stop_percentage 1
+    active_days 1
+    resubmission_active_days 1
+    pass_percentage_drop 1
+  end
 
   factory :blacklisted_password do
     string "MyString"

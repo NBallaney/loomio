@@ -546,6 +546,17 @@ ActiveRecord::Schema.define(version: 20180305031829) do
     t.index ["poll_id"], name: "index_outcomes_on_poll_id"
   end
 
+  create_table "poll_categories", force: :cascade do |t|
+    t.string "name"
+    t.integer "pass_percentage"
+    t.integer "stop_percentage"
+    t.integer "active_days"
+    t.integer "resubmission_active_days"
+    t.integer "pass_percentage_drop"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "poll_did_not_votes", id: :serial, force: :cascade do |t|
     t.integer "poll_id"
     t.integer "user_id"
@@ -604,10 +615,26 @@ ActiveRecord::Schema.define(version: 20180305031829) do
     t.boolean "voter_can_add_options", default: false, null: false
     t.integer "guest_group_id"
     t.boolean "anonymous", default: false, null: false
+    t.integer "pass_percentage"
+    t.integer "stop_percentage"
+    t.integer "resubmission_active_days"
+    t.integer "pass_percentage_drop"
+    t.integer "resubmission_count", default: 0
+    t.bigint "poll_category_id"
     t.index ["author_id"], name: "index_polls_on_author_id"
     t.index ["discussion_id"], name: "index_polls_on_discussion_id"
     t.index ["group_id"], name: "index_polls_on_group_id"
     t.index ["guest_group_id"], name: "index_polls_on_guest_group_id", unique: true
+    t.index ["poll_category_id"], name: "index_polls_on_poll_category_id"
+  end
+
+  create_table "power_users", force: :cascade do |t|
+    t.integer "user_id"
+    t.integer "vote_power"
+    t.bigint "poll_category_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["poll_category_id"], name: "index_power_users_on_poll_category_id"
   end
 
   create_table "reactions", id: :serial, force: :cascade do |t|
