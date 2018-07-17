@@ -51,10 +51,25 @@ class PollService
 
   def self.do_closing_work(poll:)
     poll.update(closed_at: Time.now) unless poll.closed_at.present?
+    determine_status poll
     poll.poll_did_not_votes.delete_all
     non_voters = poll.members - poll.participants
     poll.poll_did_not_votes.import non_voters.map { |user| PollDidNotVote.new(user: user, poll: poll) }, validate: false
     poll.update_undecided_user_count
+  end
+
+  def self.determine_status poll
+    agree_count, disagree_count,others_count = poll.get_stance_count
+    total_votes = agree_count + disagree_count + others_count
+    agree_percentage = (agree_count.to_f/total_votes)*100
+    disagree_percentage = (disagree_count.to_f/total_votes)*100
+    if agree_percentage >= poll.pass_percentage
+      poll.update_attributes(status: 0)
+    elsif disagree_percentage >= poll.stop_percentage
+      poll.update_attributes(status: 1)
+    else
+      poll.update_attributes(status: 2)
+    end
   end
 
   def self.update(poll:, params:, actor:)

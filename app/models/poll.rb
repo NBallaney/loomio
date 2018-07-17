@@ -31,8 +31,11 @@ class Poll < ApplicationRecord
   is_mentionable on: :details
 
   belongs_to :author, class_name: "User", required: true
+  belongs_to :poll_category, required: true
   has_many   :outcomes, dependent: :destroy
   has_one    :current_outcome, -> { where(latest: true) }, class_name: 'Outcome'
+  has_one    :child_poll, class_name: 'Poll', foreign_key: 'parent_id'
+  belongs_to :parent_poll, class_name: 'Poll', foreign_key: 'parent_id'
 
   belongs_to :discussion
   belongs_to :group, class_name: "FormalGroup"
@@ -42,6 +45,7 @@ class Poll < ApplicationRecord
   update_counter_cache :discussion, :closed_polls_count
 
   after_update :remove_poll_options
+  before_create :set_category_parameters
 
   has_many :stances, dependent: :destroy
   has_many :stance_choices, through: :stances
@@ -119,9 +123,12 @@ class Poll < ApplicationRecord
   validate :valid_minimum_stance_choices
   validate :closes_in_future
   validate :require_custom_fields
+  validates :resubmission_count, numericality: { less_than: 4, message: "Poll can only submitted 3 times." }
 
   alias_method :user, :author
   alias_method :draft_parent, :discussion
+
+  enum status: { Pass: 0, Stop: 1, NotDetermined: 2}
 
   def parent_event
     if discussion
@@ -236,6 +243,81 @@ class Poll < ApplicationRecord
     self.custom_fields.fetch('minimum_stance_choices', 1).to_i
   end
 
+  def get_stance_count
+    agree_count, disagree_count, others_count = 0, 0, 0
+    power_users_data, agree_votes_data, disagree_votes_data, others_votes_data = {}, {}, {}, {}
+    poll_category.power_users.map{|pu| power_users_data[pu.user_id] = pu.vote_power }
+    users_ids = User.joins(:delegate_users).where("delegate_users.poll_category_id = ?", 1).pluck(:id).uniq
+    stances.latest.each do |stance|
+      users_ids.delete(stance.participant_id)
+      if power_users_data.keys.include? stance.participant_id
+        if stance.poll_options.first.name == "agree"
+          agree_count += power_users_data[stance.participant_id]
+          agree_votes_data[stance.participant_id] = power_users_data[stance.participant_id]
+        elsif stance.poll_options.first.name == "disagree"
+          disagree_count += power_users_data[stance.participant_id]
+          disagree_votes_data[stance.participant_id] = power_users_data[stance.participant_id]
+        else
+          others_count += power_users_data[stance.participant_id]
+          others_votes_data[stance.participant_id] = power_users_data[stance.participant_id]
+        end
+      else
+        if stance.poll_options.first.name == "agree"
+          agree_count += 1
+          agree_votes_data[stance.participant_id] = 1
+        elsif stance.poll_options.first.name == "disagree"
+          disagree_count += 1
+          disagree_votes_data[stance.participant_id] = 1
+        else
+          others_count += 1
+          others_votes_data[stance.participant_id] = 1
+        end
+      end
+    end
+    users_ids.each do |user_id|
+      agree_count, disagree_count, others_count = check_delegates_vote user_id, agree_votes_data, disagree_votes_data, others_votes_data, agree_count, disagree_count, others_count, true
+    end
+    return agree_count, disagree_count, others_count
+  end
+
+  def check_delegates_vote user_id, agree_votes_data, disagree_votes_data, others_votes_data, agree_count, disagree_count, others_count, parent_user
+    
+    if parent_user
+      agree_count_bck, disagree_count_bck, others_count_bck = agree_count, disagree_count, others_count
+      agree_count, disagree_count, others_count, @traversed_ids = 0, 0, 0, []
+    end
+    if !@traversed_ids.include?(user_id)
+      @traversed_ids <<  user_id
+      users = User.find(user_id).delegate_users.where(poll_category_id: poll_category_id  )
+      users.each do |user|
+        if agree_votes_data[user.delegate_id].present?
+          agree_count += agree_votes_data[user.delegate_id]
+        elsif disagree_votes_data[user.delegate_id].present?
+          disagree_count += disagree_votes_data[user.delegate_id]
+        elsif others_votes_data[user.delegate_id].present?
+          others_count += disagree_votes_data[user.delegate_id]
+        else
+          agree_count, disagree_count, others_count = check_delegates_vote user.delegate_id, agree_votes_data, disagree_votes_data, others_votes_data, agree_count, disagree_count, others_count, false
+        end
+      end
+    end
+    if parent_user
+      max = [agree_count, disagree_count, others_count].max
+      if [agree_count, disagree_count, max].uniq.length == 1
+        #Do nothing
+      elsif agree_count==max 
+        agree_count_bck += 1
+      elsif disagree_count==max 
+        disagree_count_bck += 1
+      else 
+        others_count_bck += 1
+      end
+      return agree_count_bck, disagree_count_bck, others_count_bck
+    else
+      return agree_count, disagree_count, others_count
+    end
+  end
+
   private
 
   # provides a base hash of 0's to merge with stance data
@@ -248,6 +330,15 @@ class Poll < ApplicationRecord
     poll_options.where(name: @poll_option_removed_names).destroy_all
     @poll_option_removed_names = nil
     update_stance_data
+  end
+
+  def set_category_parameters
+    if resubmission_count == 0
+      category = self.poll_category
+      self.assign_attributes(pass_percentage: category.pass_percentage, stop_percentage: category.stop_percentage,
+            resubmission_active_days: category.resubmission_active_days, pass_percentage_drop: category.pass_percentage_drop,
+            closing_at: (Time.now + category.active_days.to_i.days))
+    end
   end
 
   def poll_options_are_valid

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180305031829) do
+ActiveRecord::Schema.define(version: 20180613170933) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -144,6 +144,17 @@ ActiveRecord::Schema.define(version: 20180305031829) do
     t.index ["priority", "run_at"], name: "delayed_jobs_priority"
     t.index ["priority"], name: "index_delayed_jobs_on_priority"
     t.index ["run_at", "locked_at", "locked_by", "failed_at"], name: "index_delayed_jobs_on_ready"
+  end
+
+  create_table "delegate_users", force: :cascade do |t|
+    t.bigint "user_id"
+    t.bigint "poll_category_id"
+    t.bigint "delegate_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["delegate_id"], name: "index_delegate_users_on_delegate_id"
+    t.index ["poll_category_id"], name: "index_delegate_users_on_poll_category_id"
+    t.index ["user_id"], name: "index_delegate_users_on_user_id"
   end
 
   create_table "discussion_readers", id: :serial, force: :cascade do |t|
@@ -621,10 +632,13 @@ ActiveRecord::Schema.define(version: 20180305031829) do
     t.integer "pass_percentage_drop"
     t.integer "resubmission_count", default: 0
     t.bigint "poll_category_id"
+    t.integer "status"
+    t.integer "parent_id"
     t.index ["author_id"], name: "index_polls_on_author_id"
     t.index ["discussion_id"], name: "index_polls_on_discussion_id"
     t.index ["group_id"], name: "index_polls_on_group_id"
     t.index ["guest_group_id"], name: "index_polls_on_guest_group_id", unique: true
+    t.index ["parent_id"], name: "index_polls_on_parent_id"
     t.index ["poll_category_id"], name: "index_polls_on_poll_category_id"
   end
 
@@ -769,10 +783,12 @@ ActiveRecord::Schema.define(version: 20180305031829) do
     t.boolean "email_verified", default: false, null: false
     t.string "location", default: "", null: false
     t.datetime "last_seen_at", default: "2018-01-14 21:22:52", null: false
+    t.integer "parent_id"
     t.index ["deactivated_at"], name: "index_users_on_deactivated_at"
     t.index ["email"], name: "email_verified_and_unique", unique: true, where: "(email_verified IS TRUE)"
     t.index ["email"], name: "index_users_on_email"
     t.index ["key"], name: "index_users_on_key", unique: true
+    t.index ["parent_id"], name: "index_users_on_parent_id"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["unsubscribe_token"], name: "index_users_on_unsubscribe_token", unique: true
     t.index ["username"], name: "index_users_on_username", unique: true
@@ -825,4 +841,8 @@ ActiveRecord::Schema.define(version: 20180305031829) do
     t.index ["hookable_type", "hookable_id"], name: "index_webhooks_on_hookable_type_and_hookable_id"
   end
 
+  add_foreign_key "delegate_users", "poll_categories"
+  add_foreign_key "delegate_users", "users"
+  add_foreign_key "polls", "poll_categories"
+  add_foreign_key "power_users", "poll_categories"
 end

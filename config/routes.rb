@@ -39,6 +39,11 @@ Loomio::Application.routes.draw do
 
   namespace :api, path: '/api/v1', defaults: {format: :json} do
     resources :usage_reports, only: [:create]
+    resources :poll_categories, only: [:index, :show, :update]
+    resources :users, only: [:index] do
+      post :assign_delegates, on: :member
+      get :fetch_delegates, on: :member
+    end
 
     resources :groups, only: [:index, :show, :create, :update] do
       get :subgroups, on: :member
@@ -141,6 +146,7 @@ Loomio::Application.routes.draw do
     resources :polls,       only: [:show, :index, :create, :update, :destroy] do
       post :close, on: :member
       post :reopen, on: :member
+      post :resubmit, on: :member
       post :add_options, on: :member
       post :toggle_subscription, on: :member
       get  :closed, on: :collection

@@ -1,4 +1,9 @@
 FactoryBot.define do
+  factory :delegate_user do
+    user nil
+    poll_category nil
+    delegate_id nil
+  end
   factory :power_user do
     user_id 1
     vote_power 1
