@@ -15,10 +15,16 @@ class API::PollCategoriesController < API::RestfulController
   end
 
   def update
-    @category = PollCategory.find(params[:id])
-    @category.update_attributes(poll_params)
-    respond_to do |f|
-      f.json {render json: {:message => "Category successfully upated", :status => 200}.as_json}
+    if current_user.is_admin
+      @category = PollCategory.find(params[:id])
+      @category.update_attributes(poll_params)
+      respond_to do |f|
+        f.json {render json: {:message => "Category successfully upated", :status => 200}.as_json}
+      end
+    else
+      respond_to do |f|
+        f.json {render json: {:message => "You are not authorized.", :status => 200}.as_json}
+      end
     end
   end
 
