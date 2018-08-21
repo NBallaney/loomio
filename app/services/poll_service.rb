@@ -46,7 +46,6 @@ class PollService
     valid = poll.valid? && new_poll.valid?
     new_poll.errors[:base] << "Proposal cannot be resubmitted because of disagree vote count." if status == "Stop"
     poll.errors[:base] << "Proposal cannot be resubmitted because of disagree vote count." if status == "Stop"
-    debugger
     return false unless( valid && (status != "Stop"))
 
     new_poll.save!
