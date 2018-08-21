@@ -9,7 +9,7 @@ angular.module('loomioApp').directive 'pollCommonActionsDropdown', ->
       AbilityService.canSharePoll($scope.poll)
 
     $scope.canEditPoll = ->
-      AbilityService.canEditPoll($scope.poll)
+    !$scope.poll.isProposal() && AbilityService.canEditPoll($scope.poll)
 
     $scope.canClosePoll = ->
       AbilityService.canClosePoll($scope.poll)
@@ -21,7 +21,7 @@ angular.module('loomioApp').directive 'pollCommonActionsDropdown', ->
       AbilityService.canExportPoll($scope.poll)
 
     $scope.canDeletePoll = ->
-      AbilityService.canDeletePoll($scope.poll)
+    !$scope.poll.isProposal() &&  AbilityService.canDeletePoll($scope.poll)
 
     $scope.exportPoll = ->
       exportPath = LmoUrlService.poll($scope.poll, {}, action:'export', absolute:true)

@@ -121,6 +121,9 @@ module.exports = class PollModel extends BaseModel
   isActive: ->
     !@closedAt?
 
+  isProposal: ->
+    @pollType == "proposal"
+
   isClosed: ->
     @closedAt?
 
