@@ -30,6 +30,11 @@ class API::PollsController < API::RestfulController
     respond_with_resource
   end
 
+  def resubmit
+    @event = service.resubmit(poll: load_resource, params: resource_params, actor: current_user)
+    respond_with_resource
+  end
+
   def add_options
     @event = service.add_options(poll: load_resource, params: params.slice(:poll_option_names), actor: current_user)
     respond_with_resource
@@ -65,6 +70,10 @@ class API::PollsController < API::RestfulController
 
   def poll_search
     PollSearch.new(current_user)
+  end
+
+  def poll_params
+    params.require(:poll).permit(:title, :details, :poll_type, :discussion_id, :poll_category_id, :closing_at, custom_fields: {}, document_ids: [], poll_option_names: [])
   end
 
   def search_filters

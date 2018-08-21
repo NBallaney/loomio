@@ -32,6 +32,29 @@ class PollService
     Events::PollReopened.publish!(poll, actor)
   end
 
+  def self.resubmit(poll:, params:, actor:)
+    #actor.ability.authorize! :reopen, poll
+
+    status = poll.status
+    new_poll = poll.build_child_poll(poll.attributes.slice("author_id", "title", "details", "poll_type", "stop_percentage", "resubmission_active_days", "pass_percentage_drop", "poll_category_id"))
+    parameters = {pass_percentage: (poll.pass_percentage  - poll.pass_percentage_drop),
+                  closing_at: (Time.now + poll.resubmission_active_days.to_i.days),
+                  resubmission_count: (poll.resubmission_count + 1), status: nil,
+                  closed_at: nil, poll_option_names: poll.poll_option_names} 
+    new_poll.assign_attributes(params.merge parameters)
+    poll.assign_attributes(resubmission_count: (poll.resubmission_count + 1))
+    valid = poll.valid? && new_poll.valid?
+    new_poll.errors[:base] << "Proposal cannot be resubmitted because of disagree vote count." if status == "Stop"
+    poll.errors[:base] << "Proposal cannot be resubmitted because of disagree vote count." if status == "Stop"
+    debugger
+    return false unless( valid && (status != "Stop"))
+
+    new_poll.save!
+    poll.save!#update_colums(resubmission_count: new_poll.resubmission_count )
+    #EventBus.broadcast('poll_create', new_poll, actor)
+    #Events::PollCreated.publish!(new_poll, actor)
+  end
+
   def self.publish_closing_soon
     hour_start = 1.day.from_now.at_beginning_of_hour
     hour_finish = hour_start + 1.hour
