@@ -94,6 +94,7 @@ en:
       next: 'Next'
       close: 'Close'
       reopen: 'Reopen'
+      resubmit: 'Resubmit'
       save: 'Save'
       save_changes: 'Save changes'
       update_settings: 'Update settings'

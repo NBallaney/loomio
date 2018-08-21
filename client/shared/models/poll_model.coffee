@@ -41,7 +41,8 @@ module.exports = class PollModel extends BaseModel
     closingAt: moment().add(3, 'days').startOf('hour')
     pollOptionNames: []
     pollOptionIds: []
-    customFields: {}
+    customFields: {},
+    pollCategoryId: 1
 
   relationships: ->
     @belongsTo 'author', from: 'users'
@@ -135,6 +136,9 @@ module.exports = class PollModel extends BaseModel
 
   reopen: =>
     @remote.postMember(@key, 'reopen', poll: {closing_at: @closingAt})
+
+  resubmit: =>
+    @remote.postMember(@key, 'resubmit', @serialize())
 
   addOptions: =>
     @remote.postMember(@key, 'add_options', poll_option_names: @pollOptionNames)
