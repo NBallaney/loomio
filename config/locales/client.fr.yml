@@ -89,6 +89,7 @@ fr:
       next: 'Suivant'
       close: 'Fermer'
       reopen: 'Relancer'
+      resubmit: 'Soumettre à nouveau'
       save: 'Enregistrer'
       save_changes: 'Sauvegarder les modifications'
       update_settings: 'Modifier vos paramètres'

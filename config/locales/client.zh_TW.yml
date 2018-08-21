@@ -91,6 +91,7 @@ zh_TW:
       next: '下一個'
       close: '關閉'
       reopen: '重新開啟'
+      resubmit: '重新提交'
       save: '儲存'
       save_changes: '儲存變更'
       update_settings: '更新設定'
