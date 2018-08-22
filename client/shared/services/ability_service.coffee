@@ -200,7 +200,7 @@ module.exports = new class AbilityService
       @canAdministerPoll() || _.contains(@poll().voters(), Session.user())
 
   canSharePoll: (poll) ->
-    @canEditPoll(poll)
+    poll.isActive() and @canAdministerPoll(poll)
 
   canRemovePollOptions: (poll) ->
     poll.isNew() || (poll.isActive() && poll.stancesCount == 0)
@@ -224,7 +224,7 @@ module.exports = new class AbilityService
       Session.user().isAuthorOf(poll)
 
   canClosePoll: (poll) ->
-    @canEditPoll(poll)
+    poll.isActive() and @canAdministerPoll(poll)
 
   canReopenPoll: (poll) ->
     poll.isClosed() and @canAdministerPoll(poll)

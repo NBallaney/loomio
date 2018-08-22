@@ -10,7 +10,7 @@ angular.module('loomioApp').directive 'pollCommonFormActions', ['$rootScope', ($
     if !$scope.poll.isNew() && $scope.poll.isClosed()
       $scope.submit = submitForm $scope, $scope.poll,
       submitFn: $scope.poll.resubmit
-      flashSuccess: "poll_common_reopen_form.#{$scope.poll.pollType}_reopened"
+      flashSuccess: "poll_common_form.resubmitted.#{$scope.poll.pollType}"
       successCallback: ->
         EventBus.emit $scope, '$close'
     else
