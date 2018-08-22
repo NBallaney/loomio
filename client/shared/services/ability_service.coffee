@@ -206,10 +206,10 @@ module.exports = new class AbilityService
     poll.isNew() || (poll.isActive() && poll.stancesCount == 0)
 
   canEditPoll: (poll) ->
-    poll.isActive() and @canAdministerPoll(poll)
+    poll.isActive() and !poll.isProposal() and @canAdministerPoll(poll)
 
   canDeletePoll: (poll) ->
-    @canAdministerPoll(poll)
+    !poll.isProposal() and @canAdministerPoll(poll)
 
   canExportPoll: (poll) ->
     @canAdministerPoll(poll)

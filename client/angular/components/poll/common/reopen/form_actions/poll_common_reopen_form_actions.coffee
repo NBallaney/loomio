@@ -17,6 +17,8 @@ angular.module('loomioApp').directive 'pollCommonReopenFormActions', ->
       successCallback: ->
         EventBus.emit $scope, '$close'
 
+    $scope.showEdit = -> $scope.poll.isProposal() && $scope.poll.resubmissionCount < 3 && $scope.poll.status != null
+
     $scope.editPoll = ->
       ModalService.open 'PollCommonEditModal', poll: -> $scope.poll
   ]
