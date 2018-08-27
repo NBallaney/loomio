@@ -4,6 +4,9 @@ angular.module('loomioApp').directive 'pollCommonFormFields', ->
   scope: {poll: '='}
   templateUrl: 'generated/components/poll/common/form_fields/poll_common_form_fields.html'
   controller: ['$scope', ($scope) ->
+
+    $scope.abc = 'perfectt'
+
     $scope.titlePlaceholder = ->
       I18n.t("poll_#{$scope.poll.pollType}_form.title_placeholder")
 

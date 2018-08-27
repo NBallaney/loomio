@@ -11,7 +11,7 @@ module.exports = class PollModel extends BaseModel
   @indices: ['discussionId', 'authorId']
   @serializableAttributes: AppConfig.permittedParams.poll
   @draftParent: 'draftParent'
-  @draftPayloadAttributes: ['title', 'details']
+  @draftPayloadAttributes: ['title', 'details', 'category']
 
   afterConstruction: ->
     HasDocuments.apply @, showTitle: true
@@ -38,6 +38,7 @@ module.exports = class PollModel extends BaseModel
     discussionId: null
     title: ''
     details: ''
+    category: ''
     closingAt: moment().add(3, 'days').startOf('hour')
     pollOptionNames: []
     pollOptionIds: []

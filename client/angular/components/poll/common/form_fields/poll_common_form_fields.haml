@@ -9,3 +9,9 @@
   %lmo_textarea{model: "poll", field: "details", label: "'poll_common_form.details' | translate", placeholder: "detailsPlaceholder()"}
 
   %outlet{name: "after-poll-form-textarea", model: "poll"}
+
+  %md-input-container
+      %md-select{ng-model: "abc"}
+        %md-option{ng-value: "null", ng-selected: "true", ng-disabled: "true"} {{ "My Placeholder" }}
+        %md-option{ng-value: "'aaa'"} {{ "Cat 1" }}
+        %md-option{ng-value: "'bbb'"} {{ "Cat 2" }}

@@ -10,7 +10,8 @@ module.exports = new class HasDrafts
       model.recordStore.drafts.findOrBuildFor(parent)
 
     model.draftFields = ->
-       _.pick model, model.constructor.draftPayloadAttributes
+      debugger
+      _.pick model, model.constructor.draftPayloadAttributes
 
     model.fetchDraft = ->
       return unless parent = model.draftParent()
