@@ -153,13 +153,13 @@ ru:
     quiet_label: "Нет "
     mute_label: "Заглушен"
     discussion:
-      title: "Настройки email для {{title}}"
       loud_description: "По каждой активности в обсуждении Вы будете уведомлены письмом на указанный почтовый адрес"
       normal_description: "Вы получите электронное письмо всякий раз, когда предложение открыто, вот-вот закроется, или когда будут опубликованы результаты."
       quiet_description: "Вы не будете получать письма об этой ветке."
       apply_to_all: "Применить эти настройки ко всем темам в этой группе."
       messages:
         loud: "Вы будете оповещенны по эмаилу о всей активности в этой теме."
+        normal: "Вам будут приходить электронные письма касательно предложений в этой ветке."
         quiet: "Вы не будете получать письма об этой ветке."
     membership:
       title: "Настройки Email {{title}}"
@@ -245,6 +245,9 @@ ru:
     email_settings: 'Настройки эмайла'
     help: 'Помощь'
     sign_out: 'Выйти'
+  membership_dropdown:
+    invitation_resent: "Переслать приглашение"
+    make_coordinator: 'Сделать координатором'
   start_menu:
     label: 'Активность пользователя'
     title: 'Действие'
@@ -280,7 +283,7 @@ ru:
     react: Добавить реакцию
     add_resource: Добавить вложение
     add_comment: Комментарий
-    copy_url_comment: Скопировать ссылку
+    copy_url: Скопировать ссылку
     edit_thread: Редактировать контекст
     translate_thread: Перевести контекст
     edit_poll: Редактировать опрос
@@ -313,6 +316,7 @@ ru:
   revision_history_modal:
     aria_label: История изменений
     posted: Размещено
+    current_revision: Последний
   reactions_display:
     you: "Вы"
     you_and_name: "Вы и {{name}}"
@@ -370,8 +374,6 @@ ru:
     name_label: 'Имя'
     coordinator_label: 'Координатор'
     remove_member_label: 'Удалить'
-  remove_membership_form:
-    submit: 'Удалить'
   pending_invitations_card:
     copy_url: Скопировать ссылку
   profile_page:
@@ -381,6 +383,7 @@ ru:
     locale_label: 'Язык'
   email_settings_page:
     header: Настройки email
+    announcement_label: Объявления
     edit: Редактировать
   dashboard_page:
     aria_label: 'Кабинет'
@@ -391,7 +394,6 @@ ru:
     dismiss: Отклонить
     filtering:
       proposals: Голосования
-      muted: Заглушен
     aria_thread:
       current_proposal: 'Текущее голосование: {{name}}.'
       you_voted: 'Ваш голос: {{position}}.'
@@ -472,6 +474,9 @@ ru:
     start: Начать
   poll_poll_form:
     edit_header: Редактировать опрос
+  poll_count_options:
+    'yes': 'Да'
+    'no': 'Нет'
   poll_meeting_chart_panel:
     total: Всего
   poll_common_subscribe_form:

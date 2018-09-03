@@ -1,7 +1,8 @@
-EventBus = require 'shared/services/event_bus.coffee'
+EventBus = require 'shared/services/event_bus'
 
-{ submitOnEnter } = require 'shared/helpers/keyboard.coffee'
-{ submitStance }  = require 'shared/helpers/form.coffee'
+{ submitOnEnter } = require 'shared/helpers/keyboard'
+{ submitStance }  = require 'shared/helpers/form'
+{ buttonStyle }   = require 'shared/helpers/style'
 
 angular.module('loomioApp').directive 'pollCommonVoteForm', ->
   scope: {stance: '='}
@@ -19,11 +20,7 @@ angular.module('loomioApp').directive 'pollCommonVoteForm', ->
       $scope.selectedOptionId == option.id
 
     $scope.mdColors = (option) ->
-      obj = {color: 'default-grey-900'}
-      if $scope.selectedOptionId == option.id
-        obj['border-color']     = 'default-accent-300'
-        obj['background-color'] = 'default-accent-100'
-      obj
+      buttonStyle($scope.selectedOptionId == option.id)
 
     $scope.select = (option) ->
       $scope.selectedOptionId = option.id

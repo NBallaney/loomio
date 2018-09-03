@@ -1,4 +1,4 @@
-utils  = require './utils.coffee'
+utils  = require './utils'
 
 module.exports =
   class BaseModel
@@ -20,8 +20,6 @@ module.exports =
     # what is the key to use when serializing the record?
     @serializationRoot: null
 
-    # override this if your apiEndPoint is not the model.plural
-    @apiEndPoint: null
     @memoize: []
 
     constructor: (recordsInterface, attributes = {}) ->
@@ -153,6 +151,9 @@ module.exports =
         @recordStore[args.from].find(@[args.by])
 
     translationOptions: ->
+
+    isA: (models...) ->
+      _.contains models, @constructor.singular
 
     isNew: ->
       not @id?

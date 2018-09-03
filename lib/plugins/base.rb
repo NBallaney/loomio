@@ -93,7 +93,7 @@ module Plugins
 
     def use_test_route(path, &block)
       raise NoCodeSpecifiedError.new unless block_given?
-      extend_class(Dev::MainController) { define_method(path, &block) }
+      extend_class(Dev::NightwatchController) { define_method(path, &block) }
     end
 
     def use_route(verb, route, action)
@@ -115,6 +115,7 @@ module Plugins
     def use_view_path(path)
       @actions.add Proc.new {
         ApplicationController.append_view_path(path_prefix(path, rails_root: false))
+        BaseMailer.append_view_path(path_prefix(path, rails_root: false))
       }.to_proc
     end
 

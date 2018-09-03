@@ -1,8 +1,12 @@
 class API::ProfileController < API::RestfulController
-
   def show
     load_and_authorize :user
     respond_with_resource serializer: UserSerializer
+  end
+
+  def mentionable_users
+    instantiate_collection { |collection| collection.search_for(params[:q]) }
+    respond_with_collection serializer: Simple::UserSerializer, root: :users
   end
 
   def me
@@ -36,6 +40,16 @@ class API::ProfileController < API::RestfulController
     respond_with_resource
   end
 
+  def destroy
+    service.destroy(user: current_user)
+    respond_with_resource
+  end
+
+  def reactivate
+    service.reactivate(user:deactivated_user, actor: current_user)
+    respond_with_resource
+  end
+
   def save_experience
     raise ActionController::ParameterMissing.new(:experience) unless params[:experience]
     service.save_experience user: current_user, actor: current_user, params: { experience: params[:experience] }
@@ -43,10 +57,14 @@ class API::ProfileController < API::RestfulController
   end
 
   def email_status
-    respond_with_resource(serializer: Pending::UserSerializer, scope: {has_token: has_invitation_token?})
+    respond_with_resource(serializer: Pending::UserSerializer, scope: {has_token: has_membership_token?})
   end
 
   private
+
+  def accessible_records
+    resource_class.mentionable_by(current_user)
+  end
 
   def resource
     @user || current_user.presence || user_by_email
@@ -56,13 +74,17 @@ class API::ProfileController < API::RestfulController
     resource_class.active.verified_first.find_by(email: params[:email]) || LoggedOutUser.new(email: params[:email])
   end
 
+  def deactivated_user
+    resource_class.inactive.verified_first.find_by(email: params[:user][:email])
+  end
+
   def current_user_params
     { user: current_user, actor: current_user, params: permitted_params.user }
   end
 
-  def has_invitation_token?
-    return unless invitation = Invitation.find_by(token: params[:token])
-    invitation.token if resource.email == invitation.email
+  def has_membership_token?
+    return unless membership = Membership.find_by(token: params[:token])
+    membership.token if resource.email == membership.user.email
   end
 
   def resource_class

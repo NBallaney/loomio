@@ -86,8 +86,7 @@ ActiveAdmin.register FormalGroup, as: 'Group' do
       row :discussions_count
       row :memberships_count
       row :admin_memberships_count
-      row :invitations_count
-      row :pending_invitations_count
+      row :unverified_memberships_count
       row :public_discussions_count
       row :payment_plan
 
@@ -168,15 +167,6 @@ ActiveAdmin.register FormalGroup, as: 'Group' do
       end
     end
 
-    panel("Pending invitations") do
-      table_for group.invitations.pending.each do |invitation|
-        column :recipient_email
-        column :link do |i|
-          invitation_url(i)
-        end
-      end
-    end
-
     if group.archived_at.nil?
       panel('Archive') do
         link_to 'Archive this group', archive_admin_group_path(group), method: :post, data: {confirm: "Are you sure you wanna archive #{group.name}, pal?"}
@@ -195,7 +185,13 @@ ActiveAdmin.register FormalGroup, as: 'Group' do
       end
     end
 
-    active_admin_comments
+    panel 'Set handle / subdomain' do
+      form action: handle_admin_group_path(group), method: :post do |f|
+        f.label "Handle"
+        f.input name: :handle, value: group.handle
+        f.input type: :submit, value: "Set handle"
+      end
+    end
   end
 
   form do |f|
@@ -214,11 +210,16 @@ ActiveAdmin.register FormalGroup, as: 'Group' do
   end
 
   member_action :move, method: :post do
+    group  = Group.friendly.find(params[:id])
+    parent = Group.friendly.find(params[:parent_id])
+    GroupService.move(group: group, parent: parent, actor: current_user)
+    redirect_to admin_group_path(group)
+  end
+
+  member_action :handle, method: :post do
+    params.permit(:id, :handle)
     group = Group.friendly.find(params[:id])
-    if parent = Group.find_by(key: params[:parent_id]) || Group.find_by(id: params[:parent_id].to_i)
-      group.subscription&.destroy if Plugins.const_defined?("LoomioOrgPlugin")
-      group.update(parent: parent)
-    end
+    group.update(handle: params[:handle])
     redirect_to admin_group_path(group)
   end
 
