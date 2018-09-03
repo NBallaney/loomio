@@ -22,9 +22,15 @@ FactoryBot.define do
     m.group { |g| g.association(:formal_group)}
   end
 
+  factory :pending_membership, class: Membership do |m|
+    m.user { |u| u.association(:unverified_user)}
+    m.group { |g| g.association(:formal_group)}
+  end
+
   factory :user do
     sequence(:email) { Faker::Internet.email }
     sequence(:name) { Faker::Name.name }
+    legal_accepted true
     password 'complex_password'
     time_zone "Pacific/Tarawa"
     email_verified true
@@ -32,6 +38,11 @@ FactoryBot.define do
     after(:build) do |user|
       user.generate_username
     end
+  end
+
+  factory :unverified_user, class: User do
+    sequence(:email) { Faker::Internet.email }
+    email_verified false
   end
 
   factory :login_token do
@@ -108,9 +119,22 @@ FactoryBot.define do
     kind :new_comment
   end
 
+  factory :version, class: PaperTrail::Version do
+    association :item, factory: :discussion
+    event :updated
+    object_changes({})
+  end
+
+  factory :discussion_event, class: Event do
+    association :eventable, factory: :discussion
+    user
+    kind :new_discussion
+  end
+
   factory :discussion do
     association :author, :factory => :user
     association :group, :factory => :formal_group
+    association :guest_group, factory: :guest_group
     title { Faker::Name.name }
     description 'A description for this discussion. Should this be *rich*?'
     uses_markdown true
@@ -157,17 +181,12 @@ FactoryBot.define do
     association :group, factory: :formal_group
   end
 
-  factory :shareable_invitation, class: Invitation do
-    single_use false
-    intent 'join_group'
-    association :inviter, factory: :user
-  end
-
   factory :membership_request do
     introduction { Faker::Lorem.sentence(4) }
     email { Faker::Internet.email }
     name { Faker::Name.name }
-    association :group, factory: :formal_group
+    association :group,     factory: :formal_group
+    association :requestor, factory: :user
   end
 
   factory :attachment do
@@ -252,12 +271,23 @@ FactoryBot.define do
     association :guest_group, factory: :guest_group
   end
 
+  factory :poll_dot_vote, class: Poll do
+    poll_type "dot_vote"
+    title "This is a dot vote"
+    details "with a description"
+    association :author, factory: :user
+    poll_option_names %w(apple banana orange)
+    custom_fields dots_per_person: 8
+    association :guest_group, factory: :guest_group
+  end
+
   factory :poll_meeting, class: Poll do
     poll_type "meeting"
     title "This is a meeting"
     details "with a description"
     association :author, factory: :user
     poll_option_names ['01-01-2015']
+    custom_fields can_respond_maybe: false
     association :guest_group, factory: :guest_group
   end
 
@@ -284,6 +314,13 @@ FactoryBot.define do
 
   factory :stance_choice do
     poll_option
+  end
+
+  factory :notification do
+    user
+    event
+    url "https://www.example.com"
+    association :actor, factory: :user
   end
 
   factory :received_email do

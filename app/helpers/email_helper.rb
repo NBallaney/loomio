@@ -12,6 +12,14 @@ module EmailHelper
     underline:            true
   ].freeze
 
+  def stance_icon_for(poll, stance_choice)
+    case stance_choice&.score.to_i
+      when 0 then "disagree"
+      when 1 then "abstain"
+      when 2 then "agree"
+    end if poll.has_score_icons
+  end
+
   def render_rich_text(text)
     return "" unless text
     Redcarpet::Render::SmartyPants.render(emojify markdownify text).html_safe
@@ -26,16 +34,19 @@ module EmailHelper
     Redcarpet::Markdown.new(renderer, *MARKDOWN_OPTIONS).render(text)
   end
 
-  def reply_to_address(discussion: , user: )
-    pairs = []
-    {d: discussion.id, u: user.id, k: user.email_api_key}.each do |key, value|
-      pairs << "#{key}=#{value}"
-    end
-    pairs.join('&')+"@#{ENV['REPLY_HOSTNAME']}"
+  def reply_to_address(model:, user: )
+    address = {
+      c: (model.id if model.is_a?(Comment)),
+      d: model.discussion_id,
+      u: user.id,
+      k: user.email_api_key
+    }.compact.map { |k, v| [k,v].join('=') }.join('&')
+    [address, ENV['REPLY_HOSTNAME']].join('@')
   end
 
-  def reply_to_address_with_group_name(discussion: , user: )
-    "\"#{discussion.group.full_name}\" <#{reply_to_address(discussion: discussion, user: user)}>"
+  def reply_to_address_with_group_name(model:, user:)
+    return unless user.is_logged_in?
+    "\"#{model.discussion.group.full_name}\" <#{reply_to_address(model: model, user: user)}>"
   end
 
   def render_email_plaintext(text)
