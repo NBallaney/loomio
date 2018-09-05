@@ -125,6 +125,12 @@ module.exports = class PollModel extends BaseModel
   isProposal: ->
     @pollType == "proposal"
 
+  isCurrentTimeGreaterThanClosingTime: ->
+    moment() > @closingAt
+
+  isReSubmittable: ->
+    @isCurrentTimeGreaterThanClosingTime() and @resubmissionCount < 3 and @status != 1 and @status != 0 && @childPollId == null
+
   isClosed: ->
     @closedAt?
 

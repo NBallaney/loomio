@@ -245,4 +245,10 @@ module.exports = new class AbilityService
     poll.isActive() and @canAdministerPoll(poll)
 
   canReopenPoll: (poll) ->
-    poll.isClosed() and @canAdministerPoll(poll)
+    if poll.isProposal()
+      (poll.isClosed() and @canAdministerPoll(poll) and !poll.isCurrentTimeGreaterThanClosingTime()) 
+    else
+      (poll.isClosed() and @canAdministerPoll(poll))
+
+  canResubmitPoll: (poll) ->
+    poll.isClosed() and @canAdministerPoll(poll) and poll.isProposal() && poll.isReSubmittable()

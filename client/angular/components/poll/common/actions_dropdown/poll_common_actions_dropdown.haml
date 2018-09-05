@@ -13,6 +13,8 @@
       %md-button{ng-click: "closePoll()", translate: "poll_common.close_poll_type", translate-value-poll-type: "{{poll.translatedPollType()}}"}
     %md-menu-item.poll-actions-dropdown__reopen{ng-if: "canReopenPoll()"}
       %md-button{ng-click: "reopenPoll()", translate: "common.action.reopen"}
+    %md-menu-item.poll-actions-dropdown__reopen{ng-if: "canResubmitPoll()"}
+      %md-button{ng-click: "resubmitPoll()", translate: "common.action.resubmit"}
     %md-menu-item.poll-actions-dropdown__export{ng-if: "canExportPoll()"}
       %md-button{ng-click: "exportPoll()", translate: "common.action.export"}
     %md-menu-item.poll-actions-dropdown__delete{ng-if: "canDeletePoll()"}

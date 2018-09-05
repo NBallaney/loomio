@@ -14,6 +14,9 @@ angular.module('loomioApp').directive 'pollCommonActionsDropdown', ->
     $scope.canReopenPoll = ->
       AbilityService.canReopenPoll($scope.poll)
 
+    $scope.canResubmitPoll = ->
+      AbilityService.canResubmitPoll($scope.poll)
+
     $scope.canExportPoll = ->
       AbilityService.canExportPoll($scope.poll)
 
@@ -35,6 +38,9 @@ angular.module('loomioApp').directive 'pollCommonActionsDropdown', ->
 
     $scope.reopenPoll = ->
       ModalService.open 'PollCommonReopenModal', poll: -> $scope.poll
+
+    $scope.resubmitPoll = ->
+      ModalService.open 'PollCommonEditModal', poll: -> $scope.poll
 
     $scope.deletePoll = ->
       ModalService.open 'PollCommonDeleteModal', poll: -> $scope.poll
