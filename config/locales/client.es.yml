@@ -91,6 +91,7 @@ es:
       next: 'Siguiente'
       close: 'Cerrar'
       reopen: 'Reabierto'
+      resubmit: 'Reenviar'
       save: 'Guardar'
       save_changes: 'Guardar cambios'
       update_settings: 'Actualizar preferencias'

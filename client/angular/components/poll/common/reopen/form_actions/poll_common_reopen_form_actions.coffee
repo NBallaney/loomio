@@ -1,6 +1,7 @@
 moment = require 'moment'
 
 EventBus = require 'shared/services/event_bus'
+ModalService   = require 'shared/services/modal_service.coffee'
 
 { submitForm } = require 'shared/helpers/form'
 
@@ -15,4 +16,7 @@ angular.module('loomioApp').directive 'pollCommonReopenFormActions', ->
       flashSuccess: "poll_common_reopen_form.#{$scope.poll.pollType}_reopened"
       successCallback: ->
         EventBus.emit $scope, '$close'
+
+    $scope.showEdit = -> $scope.poll.isProposal() && $scope.poll.resubmissionCount < 3 && $scope.poll.status != 1 && $scope.poll.childPollId == null
+    $scope.editPoll = -> ModalService.open 'PollCommonEditModal', poll: -> $scope.poll
   ]

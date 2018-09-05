@@ -38,17 +38,18 @@ angular.module('loomioApp').directive 'pollCommonDetailsPanel', ->
     #     clipboard.copyText(LmoUrlService.poll($scope.poll, {}, absolute: true))
     #     FlashService.success("action_dock.poll_copied")
     # ,
-      name: 'edit_poll'
-      icon: 'mdi-pencil'
-      canPerform: -> AbilityService.canEditPoll($scope.poll)
-      perform:    -> ModalService.open 'PollCommonEditModal', poll: -> $scope.poll
-    ,
       name: 'show_history'
       icon: 'mdi-history'
       canPerform: -> $scope.poll.edited()
       perform:    -> ModalService.open 'RevisionHistoryModal', model: -> $scope.poll
+    ]
 
-  ]
+    if !$scope.poll.isProposal()
+      $scope.actions.push
+        name: 'edit_poll'
+        icon: 'mdi-pencil'
+        canPerform: -> AbilityService.canEditPoll($scope.poll)
+        perform:    -> ModalService.open 'PollCommonEditModal', poll: -> $scope.poll
 
     listenForTranslations($scope)
     listenForReactions($scope, $scope.poll)
