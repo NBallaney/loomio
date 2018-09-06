@@ -50,7 +50,8 @@ module.exports = class PollModel extends BaseModel
     closingAt: moment().add(3, 'days').startOf('hour')
     pollOptionNames: []
     pollOptionIds: []
-    customFields: {}
+    customFields: {},
+    pollCategoryId: null
 
   audienceValues: ->
     name: @group().name
@@ -122,6 +123,15 @@ module.exports = class PollModel extends BaseModel
   isActive: ->
     !@closedAt?
 
+  isProposal: ->
+    @pollType == "proposal"
+
+  isCurrentTimeGreaterThanClosingTime: ->
+    moment() > @closingAt
+
+  isReSubmittable: ->
+    @isCurrentTimeGreaterThanClosingTime() and @resubmissionCount < 3 and @status != 1 and @status != 0 && @childPollId == null
+
   isClosed: ->
     @closedAt?
 
@@ -133,6 +143,18 @@ module.exports = class PollModel extends BaseModel
 
   reopen: =>
     @remote.postMember(@key, 'reopen', poll: {closing_at: @closingAt})
+
+  resubmit: =>
+    @remote.postMember(@key, 'resubmit', poll: {
+      title: @title,
+      details: @details,
+      poll_type: @pollType,
+      poll_category_id: @pollCategoryId,
+      closing_at: @closingAt,
+      custom_fields: @customFields,
+      document_ids: @documentIds,
+      poll_option_names: @pollOptionNames
+    })
 
   addOptions: =>
     @remote.postMember(@key, 'add_options', poll_option_names: @pollOptionNames)

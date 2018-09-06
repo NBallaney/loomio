@@ -94,6 +94,7 @@ en:
       next: 'Next'
       close: 'Close'
       reopen: 'Reopen'
+      resubmit: 'Resubmit'
       save: 'Save'
       save_changes: 'Save changes'
       update_settings: 'Update settings'
@@ -1487,8 +1488,16 @@ en:
     closed: Closed
     start: Start
     update: Update
+    category: Category
     loomio_school_link: |
       <p>Find out more at <a href="https://www.loomio.school/beginner/decision_tools.html" target="_blank">Loomio School</a>.</p>
+    resubmitted:
+      proposal: Proposal resubmitted
+      poll: Poll resubmitted
+      count: Check resubmitted
+      dot_vote: Dote vote resubmitted
+      meeting: Time poll resubmitted
+      ranked_choice: Ranked choice poll resubmitted
 
   poll_proposal_form:
     tool_tip_expanded: |
