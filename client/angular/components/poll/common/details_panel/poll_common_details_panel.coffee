@@ -44,6 +44,22 @@ angular.module('loomioApp').directive 'pollCommonDetailsPanel', ->
       perform:    -> ModalService.open 'RevisionHistoryModal', model: -> $scope.poll
     ]
 
+    $scope.categoryDetails = ->
+      "Category : #{$scope.poll.pollCategoryName}"
+
+    $scope.resubmissionDetails = (index, parentName) ->
+      "#{$scope.getCategoryNumber(parseInt(index))} Resubmission : #{parentName}"
+
+    $scope.getCategoryNumber = (number) ->
+      if number == 0
+        "First"
+      else if number == 1
+        "Second"
+      else 
+        "Third"
+
+    $scope.showResubmission = -> $scope.poll.isProposal() && $scope.poll.resubmissionCount > 0
+
     if !$scope.poll.isProposal()
       $scope.actions.push
         name: 'edit_poll'
