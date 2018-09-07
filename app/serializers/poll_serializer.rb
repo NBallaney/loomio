@@ -6,7 +6,7 @@ class PollSerializer < ActiveModel::Serializer
              :created_at, :multiple_choice, :custom_fields, :poll_option_names,
              :notify_on_participate, :subscribed, :example, :anonymous, :pass_percentage, :stop_percentage,
              :resubmission_active_days, :pass_percentage_drop, :resubmission_count, :poll_category_id,
-             :poll_category_name, :status, :parent_id, :can_respond_maybe
+             :poll_category_name, :status, :parent_id, :can_respond_maybe, :parents_names
 
   has_one :author, serializer: UserSerializer, root: :users
   has_one :current_outcome, serializer: Full::OutcomeSerializer, root: :outcomes
@@ -21,6 +21,11 @@ class PollSerializer < ActiveModel::Serializer
   end
 
   def parents
+    parents = get_parents object
+    parents
+  end
+
+  def get_parents object
     parents = []
     parents << (parent1 = object.parent_poll) if object.parent_poll
     parents << (parent2 = parent1.parent_poll) if( parent1 && parent1.parent_poll)
@@ -30,6 +35,11 @@ class PollSerializer < ActiveModel::Serializer
 
   def poll_category_name
     object.poll_category.name
+  end
+
+  def parents_names
+    parents = get_parents object
+    parents.map(&:title)
   end
 
   def my_stance
