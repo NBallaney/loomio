@@ -31,7 +31,9 @@ class API::PollsController < API::RestfulController
   end
 
   def resubmit
-    @event = service.resubmit(poll: load_resource, params: resource_params, actor: current_user)
+    @event = true 
+    self.resource = service.resubmit(poll: load_resource, params: resource_params, actor: current_user)
+    
     respond_with_resource
   end
 

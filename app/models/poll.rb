@@ -34,7 +34,7 @@ class Poll < ApplicationRecord
   is_mentionable on: :details
 
   belongs_to :author, class_name: "User", required: true
-  belongs_to :poll_category, required: true
+  belongs_to :poll_category, optional: true#, required: true
   has_many   :outcomes, dependent: :destroy
   has_one    :current_outcome, -> { where(latest: true) }, class_name: 'Outcome'
   has_one    :child_poll, class_name: 'Poll', foreign_key: 'parent_id'
@@ -97,6 +97,7 @@ class Poll < ApplicationRecord
   validate :closes_in_future
   validate :require_custom_fields
   validates :resubmission_count, numericality: { less_than: 4, message: "Poll can only submitted 3 times." }
+  validates :poll_category, presence: {message: ->(object, data) do "Please choose a category" end}, if: :type_proposal
 
   alias_method :user, :author
   alias_method :draft_parent, :discussion
@@ -117,6 +118,10 @@ class Poll < ApplicationRecord
 
   delegate :locale, to: :author
   delegate :guest_group, to: :discussion, prefix: true, allow_nil: true
+
+  def type_proposal
+    poll_type == "proposal"
+  end
 
   def groups
     [group, discussion&.guest_group, guest_group].compact
