@@ -48,7 +48,7 @@ angular.module('loomioApp').directive 'pollCommonDetailsPanel', ->
       "Category : #{$scope.poll.pollCategoryName}"
 
     $scope.resubmissionDetails = (index, parentName) ->
-      "#{$scope.getCategoryNumber(parseInt(index))} Resubmission : #{parentName}"
+      "#{$scope.getCategoryNumber(parseInt(index))} Submission : #{parentName}"
 
     $scope.getCategoryNumber = (number) ->
       if number == 0
