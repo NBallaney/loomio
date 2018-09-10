@@ -1342,6 +1342,16 @@ en:
     title: Current decisions
     start_poll: New decision
     no_polls: There are no active decisions right now.
+  
+  delegates:
+    card:
+      title: Manage Delegates
+      edit_delegates: Edit Delegates
+    modal:
+      title: Edit Delegates
+    form:
+      helptext: Who would you like to delegate?
+      placeholder: Enter names or email addresses...
 
   poll_common_collapsed:
     by_who: "by {{name}}"
