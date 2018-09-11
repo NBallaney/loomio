@@ -45,7 +45,7 @@ class Poll < ApplicationRecord
 
 
   after_update :remove_poll_options
-  before_create :set_category_parameters
+  before_create :set_category_parameters, if: :type_proposal
 
   has_many :stances, dependent: :destroy
   has_many :stance_choices, through: :stances
