@@ -39,5 +39,6 @@ records.addRecordsInterface require('shared/interfaces/login_token_records_inter
 records.addRecordsInterface require('shared/interfaces/message_channel_records_interface')
 records.addRecordsInterface require('shared/interfaces/locale_records_interface')
 records.addRecordsInterface require('shared/interfaces/member_records_interface')
+records.addRecordsInterface require('shared/interfaces/delegates_interface')
 AppConfig.records = records
 module.exports = records
