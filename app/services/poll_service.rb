@@ -52,6 +52,7 @@ class PollService
     poll.save!#update_colums(resubmission_count: new_poll.resubmission_count )
     #EventBus.broadcast('poll_create', new_poll, actor)
     #Events::PollCreated.publish!(new_poll, actor)
+    new_poll
   end
 
   def self.publish_closing_soon
