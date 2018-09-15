@@ -1,4 +1,4 @@
 .poll-proposal-form
-  %poll_common_categories{poll: "poll"}
+  %poll_common_categories{ng-if: "!poll.id", poll: "poll"}
   %poll_common_form_fields{poll: "poll"}
   %poll_common_settings.md-input-compensate{poll: "poll"}
