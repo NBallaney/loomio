@@ -9,20 +9,6 @@ module.exports = class DelegatesInterface extends BaseRecordsInterface
   fetchUsers: () ->
     @remote.get ""
 
-  buildFromModel: (model) ->
-    @build
-      model: model
-
-  findOrFetchById: (id, action) ->
-    record = @find(id)
-    if record && (!ensureComplete || record.complete)
-      Promise.resolve(record)
-    else
-      @remote.getMember(id, action).then => @find(id)
-
-  findOrFetchByIds: (id) ->
-    @remote.get id + "/fetch_delegates"
-
   fetchByUser: (user, options = {}) ->
     @fetch
       path: user.id + '/fetch_delegates'
