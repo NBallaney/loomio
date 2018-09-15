@@ -34,7 +34,7 @@ class PollSerializer < ActiveModel::Serializer
   end
 
   def poll_category_name
-    object.poll_category.name
+    object.poll_category.try(:name)
   end
 
   def parents_names
