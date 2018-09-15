@@ -96,6 +96,7 @@ en:
       reopen: 'Reopen'
       resubmit: 'Resubmit'
       save: 'Save'
+      submit: 'Submit'
       save_changes: 'Save changes'
       update_settings: 'Update settings'
       reply: 'Reply'
