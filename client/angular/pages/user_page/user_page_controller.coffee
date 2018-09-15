@@ -19,6 +19,9 @@ $controller = ($rootScope, $routeParams) ->
   @contactUser = ->
     ModalService.open 'ContactRequestModal', user: => @user
 
+  @openDelegatesModal = ->
+    ModalService.open 'DelegatesModal', user: => @user
+
   @loadGroupsFor = (user) ->
     Records.memberships.fetchByUser(user)
   applyLoadingFunction(@, 'loadGroupsFor')
@@ -26,7 +29,7 @@ $controller = ($rootScope, $routeParams) ->
   @init()
   Records.users.findOrFetchById($routeParams.key).then @init, (error) ->
     EventBus.broadcast $rootScope, 'pageError', error
-
+ 
   return
 
 $controller.$inject = ['$rootScope', '$routeParams']

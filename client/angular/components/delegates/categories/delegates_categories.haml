@@ -1,0 +1,7 @@
+.delegates-categories
+  %md-input-container.md-block
+    %label{for: "category-field", translate: "poll_common_form.category"}
+    %md-select.poll-common-form-fields__category#category-field{ng-model: "user.categoryId", ng-required: "true", ng-change: "categoryChange(user.categoryId)"}
+      %md-option{ng-repeat: "category in categories", ng-value: "category.id"}
+        {{category.name}}
+    %validation_errors{subject: "poll", field: "pollCategory"}
