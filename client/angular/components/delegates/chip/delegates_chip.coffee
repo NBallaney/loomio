@@ -1,4 +1,3 @@
-Records  = require 'shared/services/records'
 EventBus = require 'shared/services/event_bus'
 
 angular.module('loomioApp').directive 'delegatesChip', ->

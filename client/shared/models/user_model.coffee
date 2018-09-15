@@ -6,6 +6,9 @@ module.exports = class UserModel extends BaseModel
   @plural: 'users'
   @serializableAttributes: AppConfig.permittedParams.user
 
+  defaultValues: ->
+    categoryId: ''
+
   relationships: ->
     # note we should move these to a User extends UserModel so that all our authors don't get views created
     @hasMany 'memberships'
@@ -33,6 +36,9 @@ module.exports = class UserModel extends BaseModel
   groups: ->
     groups = _.filter @recordStore.groups.find(id: { $in: @groupIds() }), (group) -> !group.isArchived()
     _.sortBy groups, 'fullName'
+
+  updateCategory: (id) ->
+    @categoryId = id
 
   formalGroups: ->
     _.filter @groups(), (group) -> group.type == "FormalGroup"

@@ -1349,6 +1349,7 @@ en:
       edit_delegates: Edit Delegates
     modal:
       title: Edit Delegates
+      success: Delegates Saved Successfully
     form:
       helptext: Who would you like to delegate?
       placeholder: Enter names or email addresses...

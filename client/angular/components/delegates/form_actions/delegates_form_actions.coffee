@@ -1,17 +1,11 @@
-{ submitForm }    = require 'shared/helpers/form'
+# { submitForm }    = require 'shared/helpers/form'
 { submitOnEnter } = require 'shared/helpers/keyboard'
+EventBus = require 'shared/services/event_bus'
 
 angular.module('loomioApp').directive 'delegatesFormActions', ->
-  scope: {delegates: '='}
+  scope: {user: '='}
   replace: true
   templateUrl: 'generated/components/delegates/form_actions/delegates_form_actions.html'
-  controller: ['$scope', ($scope) ->
-    $scope.submit = submitForm $scope, $scope.delegates,
-      successCallback: (data) ->
-        $scope.delegates.membershipsCount = data.memberships.length
-        $scope.$emit '$close'
-      flashSuccess: 'delegates.flash.success'
-      flashOptions: ->
-        count: $scope.delegates.membershipsCount
-    submitOnEnter($scope, anyInput: true)
+  controller: ['$scope', '$rootScope', ($scope, $rootScope) ->
+    $scope.submit = -> EventBus.broadcast $scope.$parent, 'assignDelegates', $scope.user
   ]
