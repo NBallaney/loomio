@@ -15,7 +15,7 @@ class API::UsersController < API::RestfulController
       message = "Delegates can't be more than 11"
     else
       params[:delegate_ids].each {|id| delegates_array << {:poll_category_id => @category.id, :delegate_id => id}}
-      DelegateUser.where(id: @user.delegate_users.where(poll_category_id: @category.id).pluck(:id)).delete_all if delegates_array.any?
+      DelegateUser.where(id: @user.delegate_users.where(poll_category_id: @category.id).pluck(:id)).delete_all
       @user.delegate_users.create(delegates_array.uniq) if delegates_array.any?
       message = "Delegates assigned successfully"
     end
