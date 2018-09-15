@@ -21,7 +21,7 @@ class PollService
   def self.reopen(poll:, params:, actor:)
     actor.ability.authorize! :reopen, poll
 
-    poll.assign_attributes(closing_at: params[:closing_at], closed_at: nil)
+    poll.assign_attributes(closed_at: nil)
     return false unless poll.valid?
 
     poll.save!
