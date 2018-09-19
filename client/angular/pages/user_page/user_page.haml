@@ -24,4 +24,4 @@
                 %a{lmo-href-for: "group"} {{group.fullName}}
             %loading{ng-if: "userPage.loadGroupsForExecuting"}
 
-          %delegates_card
+          %delegates_card{ng-if: "userPage.isLoggedIn()"}

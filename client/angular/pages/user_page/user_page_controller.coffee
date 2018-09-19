@@ -13,6 +13,9 @@ $controller = ($rootScope, $routeParams) ->
       EventBus.broadcast $rootScope, 'currentComponent', {title: @user.name, page: 'userPage'}
       @loadGroupsFor(@user)
 
+   @isLoggedIn = ->
+      AbilityService.isLoggedIn()
+
   @canContactUser = ->
     AbilityService.canContactUser(@user)
 
