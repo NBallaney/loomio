@@ -1,5 +1,7 @@
 { submitOnEnter } = require 'shared/helpers/keyboard'
 { submitPoll, submitForm }    = require 'shared/helpers/form'
+{ hardReload }    = require 'shared/helpers/window'
+
 EventBus = require 'shared/services/event_bus.coffee'
 AbilityService = require 'shared/services/ability_service'
 
@@ -16,6 +18,7 @@ angular.module('loomioApp').directive 'pollCommonFormActions', ['$rootScope', ($
       flashSuccess: "poll_common_form.resubmitted.#{$scope.poll.pollType}"
       successCallback: ->
         EventBus.emit $scope, '$close'
+        hardReload()
 
     $scope.showResubmit = AbilityService.canResubmitPoll($scope.poll)
   ]
