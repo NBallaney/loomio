@@ -10,6 +10,12 @@ ActiveAdmin.register FormalGroup, as: 'Group' do
     end
   end
 
+  sidebar "More Details", only: [:show, :edit] do
+    ul do
+      li link_to "Poll Categories", admin_group_poll_categories_path(resource)
+    end
+  end
+
   actions :index, :show, :new, :edit, :update, :create
 
   filter :name

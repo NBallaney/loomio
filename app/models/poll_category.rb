@@ -1,13 +1,17 @@
 class PollCategory < ApplicationRecord
   
   has_many :polls
-  has_many :power_users, dependent: :destroy
+  # Power users would now be group specific
+  #has_many :power_users, dependent: :destroy
+  #accepts_nested_attributes_for :power_users, reject_if: proc { |attributes| attributes['vote_power'].blank? }
   has_many :delegate_users
-  accepts_nested_attributes_for :power_users, reject_if: proc { |attributes| attributes['vote_power'].blank? }
+  belongs_to :group
+
+  scope :special, -> { where(special: true) }
 
 
-  def as_json(options={})
-    super(:include => [:power_users])
-  end
+  # def as_json(options={})
+  #   super(:include => [:power_users])
+  # end
 
 end

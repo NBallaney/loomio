@@ -1,5 +1,7 @@
 ActiveAdmin.register PollCategory, as: 'PollCategory' do
   
+  belongs_to :group
+
   controller do
     def permitted_params
       params.permit!
@@ -12,6 +14,8 @@ ActiveAdmin.register PollCategory, as: 'PollCategory' do
 
   index do
     column :name
+    column "Special Category", :special
+    #column :group_id
     column :pass_percentage
     column :stop_percentage
     column :active_days
@@ -30,4 +34,5 @@ ActiveAdmin.register PollCategory, as: 'PollCategory' do
   filter :resubmission_active_days
   filter :pass_percentage_drop
   filter :created_at
+  filter :special, label: "Special Category"
 end

@@ -98,6 +98,7 @@ class Poll < ApplicationRecord
   validate :require_custom_fields
   validates :resubmission_count, numericality: { less_than: 4, message: "Poll can only submitted 3 times." }
   validates :poll_category, presence: {message: ->(object, data) do "Please choose a category" end}, if: :type_proposal
+  validates :group, presence: {message: ->(object, data) do "Please choose a Group" end}, if: :type_proposal
 
   alias_method :user, :author
   alias_method :draft_parent, :discussion

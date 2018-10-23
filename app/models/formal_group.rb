@@ -43,6 +43,8 @@ class FormalGroup < Group
   has_many :public_discussion_documents, through: :public_discussions, source: :documents
   has_many :public_poll_documents,       through: :public_polls,       source: :documents
   has_many :public_comment_documents,    through: :public_comments,    source: :documents
+  has_many :poll_categories, foreign_key: 'group_id'
+  has_many :power_users, dependent: :destroy
 
   belongs_to :cohort
   belongs_to :default_group_cover
@@ -52,6 +54,9 @@ class FormalGroup < Group
            class_name: 'Group',
            foreign_key: 'parent_id'
   has_many :all_subgroups, class_name: 'Group', foreign_key: :parent_id
+
+  # Callbacks
+  after_create :create_special_categories
 
   define_counter_cache(:public_discussions_count)  { |group| group.discussions.visible_to_public.count }
   define_counter_cache(:discussions_count)         { |group| group.discussions.count }
@@ -172,6 +177,16 @@ class FormalGroup < Group
   end
 
   private
+
+  def create_special_categories
+    categories = ["Forge Alliance", "Alliance Decision", "Increase Voting Power",
+                  "Decrease Voting Power", "Invite Member", "Exile Member"]
+    categories.each do |category|
+      self.poll_categories.create(name: category, pass_percentage: 70,
+                                  stop_percentage: 30, active_days: 5, resubmission_active_days: 3,
+                                  pass_percentage_drop: 4, special: true)
+    end
+  end
 
   def limit_inheritance
     if parent_id.present?

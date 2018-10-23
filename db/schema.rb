@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180724135748) do
+ActiveRecord::Schema.define(version: 20181022162241) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -543,6 +543,9 @@ ActiveRecord::Schema.define(version: 20180724135748) do
     t.integer "pass_percentage_drop"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "special", default: false
+    t.bigint "group_id"
+    t.index ["group_id"], name: "index_poll_categories_on_group_id"
   end
 
   create_table "poll_did_not_votes", id: :serial, force: :cascade do |t|
@@ -617,10 +620,10 @@ ActiveRecord::Schema.define(version: 20180724135748) do
   create_table "power_users", force: :cascade do |t|
     t.integer "user_id"
     t.integer "vote_power"
-    t.bigint "poll_category_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["poll_category_id"], name: "index_power_users_on_poll_category_id"
+    t.bigint "group_id"
+    t.index ["group_id"], name: "index_power_users_on_group_id"
   end
 
   create_table "reactions", id: :serial, force: :cascade do |t|
@@ -754,7 +757,7 @@ ActiveRecord::Schema.define(version: 20180724135748) do
     t.string "short_bio", default: "", null: false
     t.boolean "email_verified", default: false, null: false
     t.string "location", default: "", null: false
-    t.datetime "last_seen_at"#, default: "2018-01-14 21:22:52", null: false
+    t.datetime "last_seen_at"
     t.integer "parent_id"
     t.datetime "legal_accepted_at"
     t.boolean "email_newsletter", default: false, null: false
@@ -819,5 +822,4 @@ ActiveRecord::Schema.define(version: 20180724135748) do
   add_foreign_key "delegate_users", "poll_categories"
   add_foreign_key "delegate_users", "users"
   add_foreign_key "polls", "poll_categories"
-  add_foreign_key "power_users", "poll_categories"
 end
