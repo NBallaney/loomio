@@ -59,4 +59,12 @@ class API::GroupsController < API::RestfulController
   def resources_to_serialize
     Array(collection || [resource, resource&.parent].compact)
   end
+
+  def resource_serializer
+    if ["show"].include? params[:action]
+      Groups::ShowSerializer
+    else
+      GroupSerializer
+    end
+  end
 end
