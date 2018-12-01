@@ -64,6 +64,8 @@ Loomio::Application.routes.draw do
         patch :archive
         put :archive
         post 'upload_photo/:kind', action: :upload_photo
+        get :invitable_groups
+        get :group_members
       end
       get :count_explore_results, on: :collection
     end

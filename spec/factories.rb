@@ -1,4 +1,13 @@
 FactoryBot.define do
+  factory :power_group do
+    vote_power 1
+    parent_id 1
+    references ""
+  end
+  factory :group_membership do
+    parent_group_id 1
+    child_group_id 1
+  end
   factory :delegate_user do
     user nil
     poll_category nil

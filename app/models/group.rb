@@ -22,6 +22,9 @@ class Group < ApplicationRecord
   has_many :members, through: :memberships, source: :user
   has_many :accepted_members, through: :accepted_memberships, source: :user
 
+  has_many :group_memberships, foreign_key: "parent_group_id"
+  has_many :child_groups, through: :group_memberships#, source: :user
+
   has_many :discussions, foreign_key: :group_id, dependent: :destroy
   has_many :public_discussions, -> { visible_to_public }, foreign_key: :group_id, dependent: :destroy, class_name: 'Discussion'
   has_many :polls, foreign_key: :group_id, dependent: :destroy

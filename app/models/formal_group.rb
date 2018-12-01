@@ -44,7 +44,8 @@ class FormalGroup < Group
   has_many :public_poll_documents,       through: :public_polls,       source: :documents
   has_many :public_comment_documents,    through: :public_comments,    source: :documents
   has_many :poll_categories, foreign_key: 'group_id'
-  has_many :power_users, dependent: :destroy
+  has_many :power_users, foreign_key: "group_id", dependent: :destroy
+  has_many :power_groups, foreign_key: "parent_id", dependent: :destroy
 
   belongs_to :cohort
   belongs_to :default_group_cover

@@ -75,24 +75,95 @@ class PollService
   def self.do_closing_work(poll:)
     #poll.update(closed_at: Time.now) unless poll.closed_at.present?
     determine_status poll
+    special_categories_hook poll
     poll.poll_did_not_votes.delete_all
     poll.poll_did_not_votes.import poll.undecided.map { |user| PollDidNotVote.new(user: user, poll: poll) }, validate: false
     poll.update(closed_at: Time.now) unless poll.closed_at.present?
     poll.update_undecided_count
   end
 
+  # Determine poll status based on votes
   def self.determine_status poll
-    agree_count, disagree_count,others_count = poll.get_stance_count
+    agree_count, disagree_count, others_count = poll.get_stance_count
+    agree_count, disagree_count, others_count = check_child_poll_votes poll, agree_count, disagree_count, others_count
     total_votes = agree_count + disagree_count + others_count
     agree_percentage = (agree_count.to_f/total_votes)*100
     disagree_percentage = (disagree_count.to_f/total_votes)*100
-    if agree_percentage >= poll.pass_percentage
+    majority = [agree_percentage, disagree_percentage].max
+    if majority >= poll.pass_percentage
       poll.update_attributes(status: 0)
-    elsif disagree_percentage >= poll.stop_percentage
+    #elsif disagree_percentage >= poll.stop_percentage
+    elsif majority <= poll.stop_percentage
       poll.update_attributes(status: 1)
     else
       poll.update_attributes(status: 2)
     end
+  end
+
+  # Check child poll votes(if any) to determine the poll status
+  def self.check_child_poll_votes poll, agree_count, disagree_count, others_count
+    #agree_count, disagree_count, others_count = 0, 0, 0
+    poll.alliance_decision_child_polls.each do |child_poll|
+      if child_poll.closed?
+        case child_poll.status
+        when 0
+          agree_count += 1
+        when 1
+          disagree_count += 1
+        else
+          others_count += 1
+        end
+      else
+        others_count += 1
+      end
+    end
+    return agree_count, disagree_count, others_count
+  end
+
+  def self.special_categories_hook poll
+    case poll.poll_category.name
+    when "Forge Alliance"
+      if poll.alliance_parent_id
+        if poll.status == "Pass"
+          GroupMembership.create(parent_group_id: poll.alliance_parent_poll.group_id, child_group_id: poll.group_id)
+        end
+      else
+        if poll.status == "Pass"
+          title = "Parent Group Invitation: #{poll.title}"
+          group = Group.find(poll.additional_data["group_id"])
+          category = group.poll_categories.where(name: "Forge Alliance").first
+            #"pass_percentage", "stop_percentage", "resubmission_active_days", 
+            #"pass_percentage_drop", "poll_category_id")
+          attributes = poll.attributes.slice("author_id", "title", "details", "poll_type")
+            .merge({title: title, group_id: group.id, poll_category_id: category.id,
+                    poll_option_names: ["agree", "abstain", "disagree", "block"]})
+          poll.create_alliance_child_poll(attributes)
+        end
+      end
+    when "Alliance Decision"
+    when "Increase Voting Power" || "Decrease Voting Power"
+      data = poll.additional_data
+      if poll.status == "Pass"
+        if data["member_type"] == "group"
+          pg = PowerGroup.find_or_initialize_by(parent_id: poll.group_id, group_id: data["group_id"])
+          pg.vote_power = data["vote_power"]
+          pg.save
+          #PowerGroup.create(vote_power: data["vote_power"], parent_id: poll.group_id,
+          #                group_id: data["group_id"])
+        elsif data["member_type"] == "user"
+          pu = PowerUser.find_or_initialize_by(user_id: data["user_id"], group_id: poll.group_id)
+          pu.vote_power = data["vote_power"]
+          pu.save
+          #PowerUser.create(vote_power: data["vote_power"], user_id: data["user_id"],
+          #                group_id: poll.group_id)
+        end
+      end
+    #when "Decrease Voting Power"
+    when "Invite Member"
+      
+    when "Exile Member"
+    end
+      
   end
 
   def self.update(poll:, params:, actor:)

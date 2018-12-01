@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181022162241) do
+ActiveRecord::Schema.define(version: 20181119170228) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -258,6 +258,15 @@ ActiveRecord::Schema.define(version: 20181022162241) do
     t.datetime "updated_at", null: false
     t.index ["group_id"], name: "index_group_identities_on_group_id"
     t.index ["identity_id"], name: "index_group_identities_on_identity_id"
+  end
+
+  create_table "group_memberships", force: :cascade do |t|
+    t.integer "parent_group_id"
+    t.integer "child_group_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["child_group_id"], name: "index_group_memberships_on_child_group_id"
+    t.index ["parent_group_id"], name: "index_group_memberships_on_parent_group_id"
   end
 
   create_table "group_visits", id: :serial, force: :cascade do |t|
@@ -609,12 +618,24 @@ ActiveRecord::Schema.define(version: 20181022162241) do
     t.integer "status"
     t.integer "parent_id"
     t.integer "versions_count", default: 0
+    t.integer "alliance_parent_id"
+    t.hstore "additional_data"
     t.index ["author_id"], name: "index_polls_on_author_id"
     t.index ["discussion_id"], name: "index_polls_on_discussion_id"
     t.index ["group_id"], name: "index_polls_on_group_id"
     t.index ["guest_group_id"], name: "index_polls_on_guest_group_id", unique: true
     t.index ["parent_id"], name: "index_polls_on_parent_id"
     t.index ["poll_category_id"], name: "index_polls_on_poll_category_id"
+  end
+
+  create_table "power_groups", force: :cascade do |t|
+    t.integer "vote_power"
+    t.integer "parent_id"
+    t.bigint "group_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["group_id"], name: "index_power_groups_on_group_id"
+    t.index ["parent_id"], name: "index_power_groups_on_parent_id"
   end
 
   create_table "power_users", force: :cascade do |t|
@@ -822,4 +843,5 @@ ActiveRecord::Schema.define(version: 20181022162241) do
   add_foreign_key "delegate_users", "poll_categories"
   add_foreign_key "delegate_users", "users"
   add_foreign_key "polls", "poll_categories"
+  add_foreign_key "power_groups", "groups"
 end

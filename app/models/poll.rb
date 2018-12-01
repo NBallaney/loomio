@@ -39,6 +39,10 @@ class Poll < ApplicationRecord
   has_one    :current_outcome, -> { where(latest: true) }, class_name: 'Outcome'
   has_one    :child_poll, class_name: 'Poll', foreign_key: 'parent_id'
   belongs_to :parent_poll, class_name: 'Poll', foreign_key: 'parent_id'
+  has_one    :alliance_child_poll, -> { includes(:poll_category).where(poll_categories: {name: 'Forge Alliance'})}, class_name: 'Poll', foreign_key: 'alliance_parent_id'
+  belongs_to :alliance_parent_poll, -> { includes(:poll_category).where(poll_categories: {name: 'Forge Alliance'})}, class_name: 'Poll', foreign_key: 'alliance_parent_id'
+  has_many   :alliance_decision_child_polls, -> { includes(:poll_category).where(poll_categories: {name: 'Alliance Decision'})}, class_name: 'Poll', foreign_key: 'alliance_parent_id'
+  belongs_to :alliance_decision_parent_poll, class_name: 'Poll', foreign_key: 'alliance_parent_id', :conditions => "polls.poll_categories.name = 'Alliance Decision'"
 
   belongs_to :discussion
   belongs_to :group, class_name: "FormalGroup"
@@ -46,6 +50,7 @@ class Poll < ApplicationRecord
 
   after_update :remove_poll_options
   before_create :set_category_parameters, if: :type_proposal
+  after_create :create_alliance_proposal, if: :type_proposal
 
   has_many :stances, dependent: :destroy
   has_many :stance_choices, through: :stances
@@ -252,7 +257,7 @@ class Poll < ApplicationRecord
   def get_stance_count
     agree_count, disagree_count, others_count = 0, 0, 0
     power_users_data, agree_votes_data, disagree_votes_data, others_votes_data = {}, {}, {}, {}
-    poll_category.power_users.map{|pu| power_users_data[pu.user_id] = pu.vote_power }
+    group.power_users.map{|pu| power_users_data[pu.user_id] = pu.vote_power }
     users_ids = User.joins(:delegate_users).where("delegate_users.poll_category_id = ?", 1).pluck(:id).uniq
     stances.latest.each do |stance|
       users_ids.delete(stance.participant_id)
@@ -347,6 +352,20 @@ class Poll < ApplicationRecord
     end
   end
 
+  def create_alliance_proposal
+    if poll.group.child_groups.any?
+      poll.group.child_groups.each do |group|
+        poll_category = group.poll_categories.where(name: "Alliance Decision").first
+        title = "Parent Group: #{poll.title}"
+          #"pass_percentage", "stop_percentage", "resubmission_active_days", 
+          #"pass_percentage_drop")#, "poll_category_id")
+        attributes = poll.attributes.slice("author_id", "title", "details", "poll_type")
+          .merge({title: title, group_id: group.id, poll_category_id: poll_category.id,
+                  poll_option_names: ["agree", "abstain", "disagree", "block"]})
+        poll.alliance_decision_child_polls.create(attributes)
+      end
+    end
+  end
   def poll_options_are_valid
     prevent_added_options   unless can_add_options
     prevent_removed_options unless can_remove_options

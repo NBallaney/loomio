@@ -12,6 +12,24 @@ class API::GroupsController < API::RestfulController
     respond_with_resource
   end
 
+  def invitable_groups
+    self.resource = load_and_authorize(:formal_group)
+    ids = resource.child_groups.pluck(:id) << resource.id
+    groups = FormalGroup.where("id not in (?)",ids)
+    respond_to do |f|
+      f.json {render json: {:groups => groups, :status => 200}.as_json}
+    end
+  end
+
+  def group_members
+    self.resource = load_and_authorize(:formal_group)
+    members = resource.members
+    groups = resource.child_groups
+    respond_to do |f|
+      f.json {render json: {:groups => groups, members: members, :status => 200}.as_json}
+    end
+  end
+
   def index
     instantiate_collection { |collection| collection.search_for(params[:q]).order(recent_activity_count: :desc) }
     respond_with_collection
