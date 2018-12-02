@@ -25,8 +25,9 @@ class API::GroupsController < API::RestfulController
     self.resource = load_and_authorize(:formal_group)
     members = resource.members
     groups = resource.child_groups
+    parent_groups = GroupMembership.where(child_group_id: resource.id).map(&:parent_group)
     respond_to do |f|
-      f.json {render json: {:groups => groups, members: members, :status => 200}.as_json}
+      f.json {render json: {:groups => groups, members: members, parent_groups: parent_groups, :status => 200}.as_json}
     end
   end
 
