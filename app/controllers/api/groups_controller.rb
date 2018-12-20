@@ -23,7 +23,7 @@ class API::GroupsController < API::RestfulController
 
   def group_members
     self.resource = load_and_authorize(:formal_group)
-    members = resource.members
+    members = resource.memberships.active.map(&:user)
     groups = resource.child_groups
     parent_groups = GroupMembership.where(child_group_id: resource.id).map(&:parent_group)
     respond_to do |f|

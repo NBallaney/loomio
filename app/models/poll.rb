@@ -33,6 +33,8 @@ class Poll < ApplicationRecord
   is_translatable on: [:title, :details]
   is_mentionable on: :details
 
+  attr_accessor :majority
+
   belongs_to :author, class_name: "User", required: true
   belongs_to :poll_category, optional: true#, required: true
   has_many   :outcomes, dependent: :destroy

@@ -30,7 +30,9 @@ class PermittedParams < Struct.new(:params)
      :multiple_choice, :key, :anyone_can_participate, :notify_on_participate, :voter_can_add_options,
      :custom_fields, {custom_fields: [:can_respond_maybe, :deanonymize_after_close, :dots_per_person, :time_zone, :meeting_duration, :minimum_stance_choices, :pending_emails, {pending_emails: []}]},
      :document_ids, {document_ids: []},
-     :poll_option_names, {poll_option_names: []}]
+     :poll_option_names, {poll_option_names: []},
+     :additional_data, {additional_data: [:user_id, :group_id, :vote_power, :member_type,
+                        :emails, :user_ids]}]
   end
 
   def stance_attributes

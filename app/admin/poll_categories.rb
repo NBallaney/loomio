@@ -10,7 +10,34 @@ ActiveAdmin.register PollCategory, as: 'PollCategory' do
     def find_resource
       PollCategory.find(params[:id])
     end
+
+    def update
+      update! do |format|
+        format.html { 
+          if resource.errors.any?
+            flash[:error] = resource.errors.full_messages.join(", ")
+            redirect_to edit_admin_group_poll_category_path(resource.group, resource) 
+          else
+            redirect_to admin_group_poll_category_path(resource.group, resource) 
+          end
+        }
+      end
+    end
   end
+
+  form do |f|
+    f.inputs 'Teams' do
+      input :group_id, :as => :select, :collection => FormalGroup.all.map {|u| [u.name, u.id]}
+      input :name
+      input :pass_percentage
+      input :stop_percentage
+      input :active_days
+      input :resubmission_active_days
+      input :pass_percentage_drop
+    end
+    actions
+  end
+
 
   index do
     column :name

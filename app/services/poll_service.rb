@@ -87,13 +87,16 @@ class PollService
     agree_count, disagree_count, others_count = poll.get_stance_count
     agree_count, disagree_count, others_count = check_child_poll_votes poll, agree_count, disagree_count, others_count
     total_votes = agree_count + disagree_count + others_count
-    agree_percentage = (agree_count.to_f/total_votes)*100
-    disagree_percentage = (disagree_count.to_f/total_votes)*100
-    majority = [agree_percentage, disagree_percentage].max
-    if majority >= poll.pass_percentage
-      poll.update_attributes(status: 0)
+    if total_votes > 0 && (agree_count > 0 || disagree_count > 0)
+      agree_percentage = (agree_count.to_f/total_votes)*100
+      disagree_percentage = (disagree_count.to_f/total_votes)*100
+      majority = [agree_percentage, disagree_percentage].max
+      majority_value = (agree_percentage > disagree_percentage) ? "yes" : "no"
+    end
+    if majority && (majority >= poll.pass_percentage)
+      poll.update_attributes(status: 0, majority: majority_value)
     #elsif disagree_percentage >= poll.stop_percentage
-    elsif majority <= poll.stop_percentage
+    elsif majority && (majority <= poll.stop_percentage)
       poll.update_attributes(status: 1)
     else
       poll.update_attributes(status: 2)
@@ -124,11 +127,11 @@ class PollService
     case poll.poll_category.name
     when "Forge Alliance"
       if poll.alliance_parent_id
-        if poll.status == "Pass"
+        if poll.status == "Pass" && poll.majority =="yes"
           GroupMembership.create(parent_group_id: poll.alliance_parent_poll.group_id, child_group_id: poll.group_id)
         end
       else
-        if poll.status == "Pass"
+        if poll.status == "Pass" && poll.majority =="yes"
           title = "Parent Group Invitation: #{poll.title}"
           group = Group.find(poll.additional_data["group_id"])
           category = group.poll_categories.where(name: "Forge Alliance").first
@@ -141,27 +144,56 @@ class PollService
         end
       end
     when "Alliance Decision"
-    when "Increase Voting Power" || "Decrease Voting Power"
+    when "Increase Voting Power"
       data = poll.additional_data
-      if poll.status == "Pass"
+      if poll.status == "Pass" && poll.majority =="yes"
         if data["member_type"] == "group"
           pg = PowerGroup.find_or_initialize_by(parent_id: poll.group_id, group_id: data["group_id"])
-          pg.vote_power = data["vote_power"]
-          pg.save
-          #PowerGroup.create(vote_power: data["vote_power"], parent_id: poll.group_id,
-          #                group_id: data["group_id"])
+          if(data["vote_power"].to_i > 1)
+            pg.vote_power = data["vote_power"]
+            pg.save
+          end
         elsif data["member_type"] == "user"
           pu = PowerUser.find_or_initialize_by(user_id: data["user_id"], group_id: poll.group_id)
-          pu.vote_power = data["vote_power"]
-          pu.save
-          #PowerUser.create(vote_power: data["vote_power"], user_id: data["user_id"],
-          #                group_id: poll.group_id)
+          if(data["vote_power"].to_i > 1)
+            pu.vote_power = data["vote_power"]
+            pu.save
+          end
         end
       end
-    #when "Decrease Voting Power"
+    when "Decrease Voting Power"
+      data = poll.additional_data
+      if poll.status == "Pass" && poll.majority =="yes"
+        if data["member_type"] == "group"
+          pg = PowerGroup.find_by(parent_id: poll.group_id, group_id: data["group_id"])
+          if( pg && (data["vote_power"].to_i > 0))
+            pg.vote_power = data["vote_power"]
+            pg.save
+          end
+        elsif data["member_type"] == "user"
+          pu = PowerUser.find_by(user_id: data["user_id"], group_id: poll.group_id)
+          if( pg && (data["vote_power"].to_i > 0))
+            pu.vote_power = data["vote_power"]
+            pu.save
+          end
+        end
+      end
     when "Invite Member"
-      
+      if poll.status == "Pass" && poll.majority =="yes"
+        notified_model = poll.group
+        params = {:recipients => {}}
+        params[:recipients][:user_ids] = JSON.parse( poll.additional_data["user_ids"])
+        params[:recipients][:emails] = JSON.parse( poll.additional_data["emails"])
+        params[:kind] = "group_announced"
+        AnnouncementService.create(model: notified_model, params: params, actor: poll.user)
+      end
     when "Exile Member"
+      if poll.status == "Pass" && poll.majority =="yes"
+        data = poll.additional_data
+        user_id = data["user_id"]
+        membership = Membership.find_by(group_id: poll.group_id,user_id: user_id)
+        membership.destroy if membership
+      end
     end
       
   end
