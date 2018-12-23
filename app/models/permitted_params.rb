@@ -32,7 +32,7 @@ class PermittedParams < Struct.new(:params)
      :document_ids, {document_ids: []},
      :poll_option_names, {poll_option_names: []},
      :additional_data, {additional_data: [:user_id, :group_id, :vote_power, :member_type,
-                        :emails, :user_ids]}]
+                        :emails, {emails: []}, :user_ids, {user_ids: []}]}]
   end
 
   def stance_attributes
