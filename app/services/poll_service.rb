@@ -189,10 +189,17 @@ class PollService
       end
     when "Exile Member"
       if poll.status == "Pass" && poll.majority =="yes"
-        data = poll.additional_data
-        user_id = data["user_id"]
-        membership = Membership.find_by(group_id: poll.group_id,user_id: user_id)
-        membership.destroy if membership
+        if data["member_type"] == "user"
+          data = poll.additional_data
+          user_id = data["user_id"]
+          membership = Membership.find_by(group_id: poll.group_id,user_id: user_id)
+          membership.destroy if membership
+        elsif data["member_type"] == "group"
+          data = poll.additional_data
+          group_id = data["group_id"]
+          membership = GroupMembership.find_by(parent_group_id: poll.group_id,child_group_id: group_id)
+          membership.destroy if membership
+        end
       end
     end
       
