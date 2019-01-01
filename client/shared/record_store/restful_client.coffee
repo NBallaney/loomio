@@ -40,7 +40,7 @@ module.exports =
     fetch: ({params, path}) ->
       @get(path or '', params)
 
-    post: (path, params) ->
+    post: (path, params) -> 
       @request @buildUrl(path), 'POST', paramsFor(params)
 
     patch: (path, params) ->
@@ -90,7 +90,7 @@ module.exports =
 
     upload: (path, file, options = {}, onProgress) ->
       new Promise (resolve, reject) =>
-        data = new FormData();
+        data = new FormData()
         data.append(options.fileField     || 'file',     file)
         data.append(options.filenameField || 'filename', file.name.replace(/[^a-z0-9_\-\.]/gi, '_'))
 

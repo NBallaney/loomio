@@ -63,7 +63,7 @@ class API::PollsController < API::RestfulController
   end
 
   def poll_params
-    params.require(:poll).permit(:title, :details, :poll_type, :discussion_id, :poll_category_id, :closing_at, custom_fields: {}, document_ids: [], poll_option_names: [])
+    params.require(:poll).permit(:title, :details, :poll_type, :discussion_id, :poll_category_id,:group_id, :closing_at, custom_fields: {}, document_ids: [], poll_option_names: [])
   end
 
   def search_filters

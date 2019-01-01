@@ -155,6 +155,9 @@ en_US:
     failure:
       inactive: 'There is a deactivated account associated with this email address. If you want to reactivate your account, contact us.'
 
+  groups_card:
+    parent_title: Parent Groups
+
   error_page:
     forbidden: 'You do not have permission to do this.'
     page_not_found: 'We were unable to find that. It may have been deleted or moved.'
@@ -667,7 +670,7 @@ en_US:
     edit_subgroup_heading: 'Edit subgroup settings'
     group_name: 'Group Name'
     group_name_placeholder: 'What do you want to call your group?'
-    subgroup_name: 'Subgroup Name'
+    subgroup_name: 'Subgroup Name2'
     description: 'Description'
     description_placeholder: 'Describe the purpose of your group so your group members know why they are here.'
     privacy_statement:
@@ -1424,6 +1427,10 @@ en_US:
   poll_card:
     started_by: Started by {{name}}
 
+  groups_card:
+    parent_title: Parent Groups
+    child_title: Child Groups
+  
   poll_common_votes_panel:
     newest_first: Newest first
     oldest_first: Oldest first

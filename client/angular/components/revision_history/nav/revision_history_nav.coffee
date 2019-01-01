@@ -27,12 +27,12 @@ angular.module('loomioApp').directive 'revisionHistoryNav', ->
 
     $scope.setNextRevision = ->
       if !$scope.isNewest()
-        $scope.currentIndex += 1;
+        $scope.currentIndex += 1
         $scope.getVersion()
 
     $scope.setPreviousRevision = ->
       if ! $scope.isOldest()
-        $scope.currentIndex -= 1;
+        $scope.currentIndex -= 1
         $scope.getVersion()
 
     $scope.setOldestRevision = ->

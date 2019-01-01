@@ -1,0 +1,4 @@
+.poll-common-select-voting-power-type  
+  %label{for: "member-type-field"} {{"Select Member Type"}}
+  %md-select.poll-common-voting-power-fields__member_field#voting-power-field{ng-model: "poll.additionalData.member_type",ng-required: "true", ng-change: "changeType(poll.additionalData.member_type)"}
+    %md-option{ng-repeat: "member in voting_power_type", ng-value: "member.id"} {{member.name}}

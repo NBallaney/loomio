@@ -57,6 +57,7 @@ module.exports = class GroupModel extends BaseModel
   pendingMemberships: ->
     _.filter @memberships(), (m) -> !m.acceptedAt
 
+
   hasRelatedDocuments: ->
     @hasDocuments() or @allDocuments().length > 0
 
@@ -75,7 +76,7 @@ module.exports = class GroupModel extends BaseModel
   activePolls: ->
     _.filter @polls(), (poll) ->
       poll.isActive()
-
+  
   pendingMembershipRequests: ->
     _.filter @membershipRequests(), (membershipRequest) ->
       membershipRequest.isPending()
@@ -119,6 +120,11 @@ module.exports = class GroupModel extends BaseModel
   admins: ->
     adminIds = _.map(@adminMemberships(), (membership) -> membership.userId)
     @recordStore.users.find(id: {$in: adminIds})
+
+  getParentGroups: (groupId) ->
+    alert(groupId)
+    console.log(groupId)
+    # @recordStore.groups.fetchByParent(groupId)
 
   coordinatorsIncludes: (user) ->
     _.some @recordStore.memberships.where(groupId: @id, userId: user.id)

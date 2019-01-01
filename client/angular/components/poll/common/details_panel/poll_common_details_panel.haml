@@ -8,6 +8,7 @@
     %span.lmo-badge.lmo-pointer{ng-if: "poll.anonymous", md-colors: "{color: 'primary-600', 'border-color': 'primary-600'}", translate: "common.anonymous"}
   
   .poll-common-details-panel__category-header.lmo-markdown-wrapper{ng-if: "poll.isProposal()", translate: "{{categoryDetails()}}"}
+  .poll-common-details-panel__category-header.lmo-markdown-wrapper{ng-if: "poll.isProposal()", translate: "{{getGroupDetail()}}"}
   .poll-common-details-panel__resubmission-details.lmo-markdown-wrapper{ng-if: "showResubmission()", ng-repeat: "(index,parentName) in poll.parentsNames", translate: "{{resubmissionDetails(index,parentName)}}"}
   .poll-common-details-panel__details.lmo-markdown-wrapper{ng-if: "!translation", marked: "poll.cookedDetails()"}
   .poll-common-details-panel__details{ng-if: "poll.translation"}

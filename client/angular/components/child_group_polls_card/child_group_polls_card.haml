@@ -1,0 +1,6 @@
+.child-group-polls-card.lmo-card
+    %h2.lmo-card-heading.lmo-truncate-text Child Groups
+    %loading{ng-if: "fetchChildRecordsExecuting"}
+    .child-group-polls-card__fetchChildRecords{ng-if: "fetched"}
+    	%poll_group_child_preview{poll: "group", ng-repeat: "group in recordGroups"} 
+    	

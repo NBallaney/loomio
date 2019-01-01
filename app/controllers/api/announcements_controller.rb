@@ -1,4 +1,4 @@
-class API::AnnouncementsController < API::RestfulController
+class API::Announcements < API::Restful
   def audience
     self.collection = service.audience_for(notified_model, params.require(:kind), current_user)
     respond_with_collection serializer: AnnouncementRecipientSerializer, root: false

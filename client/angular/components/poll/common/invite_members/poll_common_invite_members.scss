@@ -1,0 +1,19 @@
+.pollCommonInviteMember md-list-item div {
+
+    width: 100% !important;
+    display: inline-table;
+
+}
+
+.pollCommonInviteMember md-list-item .mdi.mdi-20px.mdi-window-close {
+    float: right;
+}
+
+.pollCommonInviteMember md-list-item {
+    border: 1px solid rgba(0,0,0,0.1);
+}
+
+poll_common_invite_members .md-whiteframe-z1{
+	box-shadow:none !important;
+	border:none !important;
+}

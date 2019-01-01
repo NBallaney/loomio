@@ -34,7 +34,6 @@ class PollService
 
   def self.resubmit(poll:, params:, actor:)
     #actor.ability.authorize! :reopen, poll
-
     status = poll.status
     new_poll = poll.build_child_poll(poll.attributes.slice("author_id", "title", "details", "poll_type", "stop_percentage", "resubmission_active_days", "pass_percentage_drop", "poll_category_id"))
     parameters = {pass_percentage: (poll.pass_percentage  - poll.pass_percentage_drop),

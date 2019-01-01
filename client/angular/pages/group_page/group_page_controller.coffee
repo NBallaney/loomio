@@ -46,7 +46,6 @@ $controller = ($rootScope, $routeParams) ->
   @init = (group) =>
     @group = group
     subscribeTo(@group)
-
     Records.drafts.fetchFor(@group) if AbilityService.canCreateContentFor(@group)
 
     maxDiscussions = if AbilityService.canViewPrivateContent(@group)

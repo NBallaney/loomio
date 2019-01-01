@@ -4,6 +4,9 @@ GroupModel           = require 'shared/models/group_model'
 module.exports = class GroupRecordsInterface extends BaseRecordsInterface
   model: GroupModel
 
+  fetch: () ->
+    @remote.get ""
+
   fuzzyFind: (id) ->
     # could be id or key or handle
     @find(id) || _.first(@find(handle: id))
@@ -18,6 +21,9 @@ module.exports = class GroupRecordsInterface extends BaseRecordsInterface
   fetchByParent: (parentGroup) ->
     @fetch
       path: "#{parentGroup.id}/subgroups"
+  
+  fetchChildGroups: (groupId) ->
+    @remote.get(groupId+'/group_members.json',{})
 
   fetchExploreGroups: (query, options = {}) ->
     options['q'] = query
@@ -29,3 +35,11 @@ module.exports = class GroupRecordsInterface extends BaseRecordsInterface
     @fetch
       path: 'count_explore_results'
       params: options
+
+  
+  getGroupCategories: (group) ->
+    @remote.get group+".json"
+
+  getInvitableGroups: (group) ->
+    @remote.get "#{group}/invitable_groups.json"
+

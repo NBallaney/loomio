@@ -598,6 +598,8 @@ en:
   personal_data:
     title: Personal data of %{user_name} in on %{host_name}
 
+  groups_card:
+    parent_title: Parent Groups
 
   poll_generator:
     proposal:

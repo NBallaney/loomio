@@ -4,6 +4,7 @@ ModalService   = require 'shared/services/modal_service'
 RecordLoader   = require 'shared/services/record_loader'
 I18n           = require 'shared/services/i18n'
 Records        = require 'shared/services/records'
+AppConfig     = require 'shared/services/app_config'
 
 angular.module('loomioApp').directive 'membershipCard', ->
   scope: {group: '=', pending: "=?"}
@@ -18,7 +19,6 @@ angular.module('loomioApp').directive 'membershipCard', ->
       $scope.canView()
 
     $scope.plusUser = Records.users.build(avatarKind: 'mdi-plus')
-
     $scope.canView = ->
       if $scope.pending
         AbilityService.canViewPendingMemberships($scope.group)
@@ -50,6 +50,18 @@ angular.module('loomioApp').directive 'membershipCard', ->
 
     $scope.canAddMembers = ->
       AbilityService.canAddMembers($scope.group) && !$scope.pending
+    
+    $scope.isMainAdmin = ->
+      if AppConfig.currentUserId == $scope.group.creatorId
+        return true
+      else
+        return false
+
+    $scope.timeDuration = ->
+      if (new Date() - new Date($scope.group.createdAt))/86400000 > 10
+        return false
+      else
+        return true
 
     $scope.memberships = ->
       if $scope.vars.fragment

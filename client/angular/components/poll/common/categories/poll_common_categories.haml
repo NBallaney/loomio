@@ -1,7 +1,17 @@
 .poll-common-categories
   %md-input-container.md-block
     %label{for: "category-field", translate: "poll_common_form.category"}
-    %md-select.poll-common-form-fields__category#category-field{ng-model: "poll.pollCategoryId", ng-required: "true"}
-      %md-option{ng-repeat: "category in pollCategories", ng-value: "category.id"}
+    %md-select.poll-common-form-fields__category#category-field{ng-model: "poll.pollCategoryId", ng-required: "true", ng-change:"get_data(poll.pollCategoryId)"}
+      %md-option{ng-repeat: "category in categroyDropDown", ng-value: "category.id"}
         {{category.name}}
     %validation_errors{subject: "poll", field: "pollCategory"}
+  %md-input-container.md-block{ng-if:"pollCategoryName == 'Forge Alliance'"}
+    %poll_common_forge_alliance.animated
+  %md-input-container.md-block{ng-if: "pollCategoryName == 'Increase Voting Power' || pollCategoryName == 'Decrease Voting Power'"}
+    %poll_common_voting_power.animated
+  %md-input-container.md-block{ng-if:"pollCategoryName == 'Exile Member'"}
+    %poll_common_exile_member.animated
+  %md-input-container.md-block{ng-if:"pollCategoryName == 'Invite Member'"}
+    %poll_common_invite_members.animated
+  
+

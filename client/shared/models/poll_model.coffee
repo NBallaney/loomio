@@ -51,7 +51,9 @@ module.exports = class PollModel extends BaseModel
     pollOptionNames: []
     pollOptionIds: []
     customFields: {},
+    additionalData:{},
     pollCategoryId: null
+    pollVotePowerType: null
 
   audienceValues: ->
     name: @group().name
@@ -150,15 +152,20 @@ module.exports = class PollModel extends BaseModel
       details: @details,
       poll_type: @pollType,
       poll_category_id: @pollCategoryId,
+      group_id: @group,
       closing_at: @closingAt,
       custom_fields: @customFields,
       document_ids: @documentIds,
-      poll_option_names: @pollOptionNames
+      poll_option_names: @pollOptionNames,
+      additional_data: @additionalData
     })
+
+  getParentGroups:(parentID)->
+    console.log(paerentID)
 
   addOptions: =>
     @remote.postMember(@key, 'add_options', poll_option_names: @pollOptionNames)
-
+    
   toggleSubscription: =>
     @remote.postMember(@key, 'toggle_subscription')
 

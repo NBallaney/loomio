@@ -55,6 +55,7 @@ module.exports =
       flashSuccess: "poll_#{model.pollType}_form.#{model.pollType}_#{actionName(model)}"
       prepareFn: =>
         EventBus.emit scope, 'processing'
+
         model.customFields.deanonymize_after_close = model.deanonymizeAfterClose if model.anonymous
         switch model.pollType
           # for polls with default poll options (proposal, check)
@@ -111,7 +112,6 @@ submit = (scope, model, options = {}) ->
   if model.hasDrafts and model.isNew() and AbilityService.isLoggedIn()
     model.fetchAndRestoreDraft()
     EventBus.watch scope, model.draftFields, model.planDraftFetch, true
-
   submitFn  = options.submitFn  or model.save
   confirmFn = options.confirmFn or (-> false)
   (prepareArgs) ->
