@@ -11,5 +11,5 @@ angular.module('loomioApp').directive 'pollCommonSelectVotingPowerType', ->
      
     $scope.changeType = (field_data) ->
       #$scope.poll.additionalData.member_type = field_data
-      console.log(field_data)
+      # console.log(field_data)
   ]

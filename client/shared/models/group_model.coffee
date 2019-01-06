@@ -122,9 +122,7 @@ module.exports = class GroupModel extends BaseModel
     @recordStore.users.find(id: {$in: adminIds})
 
   getParentGroups: (groupId) ->
-    alert(groupId)
-    console.log(groupId)
-    # @recordStore.groups.fetchByParent(groupId)
+    @recordStore.groups.fetchByParent(groupId)
 
   coordinatorsIncludes: (user) ->
     _.some @recordStore.memberships.where(groupId: @id, userId: user.id)

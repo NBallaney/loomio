@@ -160,8 +160,8 @@ module.exports = class PollModel extends BaseModel
       additional_data: @additionalData
     })
 
-  getParentGroups:(parentID)->
-    console.log(paerentID)
+  # getParentGroups:(parentID)->
+  #   console.log(paerentID)
 
   addOptions: =>
     @remote.postMember(@key, 'add_options', poll_option_names: @pollOptionNames)

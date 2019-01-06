@@ -1,3 +1,4 @@
+Records  = require 'shared/services/records'
 EventBus = require 'shared/services/event_bus'
 
 angular.module('loomioApp').directive 'delegatesChip', ->
@@ -5,7 +6,7 @@ angular.module('loomioApp').directive 'delegatesChip', ->
   replace: true
   restrict: 'E'
   templateUrl: 'generated/components/delegates/chip/delegates_chip.html'
-  controller: ['$scope', ($scope) ->
+  controller: ['$scope',user, ($scope,user) ->
     $scope.removeRecipient = ->
       EventBus.emit $scope, 'removeRecipient', $scope.user
   ]

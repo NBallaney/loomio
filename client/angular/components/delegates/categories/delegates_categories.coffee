@@ -1,22 +1,16 @@
 Records        = require 'shared/services/records'
-EventBus = require 'shared/services/event_bus'
-
 { applyLoadingFunction } = require 'shared/helpers/apply'
+Session       = require 'shared/services/session'
 
 angular.module('loomioApp').directive 'delegatesCategories', ->
-  scope: {user: '='}
+  # scope: {delegates: '='}
   templateUrl: 'generated/components/delegates/categories/delegates_categories.html'
   controller: ['$scope', ($scope) ->
+    $scope.user = Session.user()
     $scope.fetchRecords = ->
       Records.pollCategories.fetch()
     applyLoadingFunction $scope, 'fetchRecords'
     $scope.fetchRecords().then((res) ->
-      $scope.categories = res.categories
-      $scope.categoryChange($scope.categories[0].id)
+      $scope.pollCategories = res.categories
     )
-
-    $scope.categoryChange = (id) ->
-      $scope.user.updateCategory(id)
-      EventBus.emit $scope, 'categoryChange', $scope.user
-
-  ]
+]
