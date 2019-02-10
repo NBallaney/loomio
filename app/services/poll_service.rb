@@ -187,6 +187,7 @@ class PollService
         AnnouncementService.create(model: notified_model, params: params, actor: poll.user)
       end
     when "Exile Member"
+      data = poll.additional_data
       if poll.status == "Pass" && poll.majority =="yes"
         if data["member_type"] == "user"
           data = poll.additional_data
