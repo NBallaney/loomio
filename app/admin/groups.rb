@@ -16,7 +16,7 @@ ActiveAdmin.register FormalGroup, as: 'Group' do
     end
   end
 
-  actions :index, :show, :new, :edit, :update, :create
+  actions :index, :show, :edit, :update, :create
 
   filter :name
   filter :description

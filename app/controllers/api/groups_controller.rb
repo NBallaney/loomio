@@ -15,7 +15,7 @@ class API::GroupsController < API::RestfulController
   def invitable_groups
     self.resource = load_and_authorize(:formal_group)
     ids = resource.child_groups.pluck(:id) << resource.id
-    groups = FormalGroup.where("id not in (?)",ids)
+    groups = FormalGroup.published.where("id not in (?)",ids)
     respond_to do |f|
       f.json {render json: {:groups => groups, :status => 200}.as_json}
     end
