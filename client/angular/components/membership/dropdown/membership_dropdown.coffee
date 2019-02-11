@@ -33,6 +33,9 @@ angular.module('loomioApp').directive 'membershipDropdown', ->
     $scope.canRemoveMembership = ->
       AbilityService.canRemoveMembership($scope.membership)
 
+    $scope.removeMembershipDuration = ->
+      AbilityService.canRemoveMembership($scope.membership) and AbilityService.removeMembershipDuration($scope.membership,7)
+          
     $scope.removeMembership = ->
       namespace = if $scope.membership.acceptedAt then 'membership' else 'invitation'
       ModalService.open 'ConfirmModal', confirm: ->

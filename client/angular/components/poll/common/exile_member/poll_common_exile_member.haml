@@ -1,6 +1,6 @@
 .poll-common-group-member
   %md-input-container.md-block
-    %label{for: "exile-member", translate: "Exile Member/Sub Group"}
+    %label{for: "exile-member", translate: "Exile Member/Child Group"}
     %md-select.poll-common-exile-member__member#member-field{ng-model: "user_id", ng-required: "true",ng-change:"selected_template(user_id)"}
       %md-option{ng-repeat: "category in recordGroupMembers", ng-value: "category.id"}
         {{category.name}}

@@ -24,5 +24,5 @@ angular.module('loomioApp').directive 'pollCommonGroupMember', ->
     $scope.fetchGroupMembers()
 
     $scope.get_data = (member_id) ->
-      $scope.poll.additionalData.member_id = member_id
+      $scope.poll.additionalData.user_id = member_id
   ]

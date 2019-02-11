@@ -1,6 +1,6 @@
 .poll-common-group-member
   %md-input-container.md-block
     %label{for: "group-member", translate: "Group Member"}
-    %md-select.poll-common-group-member__member#member-field{ng-model: "poll.additionalData.member_id", ng-required: "true", ng-change:"get_data(poll.additionalData.member_id)"}
+    %md-select.poll-common-group-member__member#member-field{ng-model: "poll.additionalData.user_id", ng-required: "true", ng-change:"get_data(poll.additionalData.user_id)"}
       %md-option{ng-repeat: "category in recordGroupMembers", ng-value: "category.id"}
         {{category.name}}

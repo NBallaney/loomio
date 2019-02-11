@@ -158,7 +158,13 @@ module.exports = new class AbilityService
     Session.user().isAuthorOf(comment)) or
     @canAdministerGroup(comment.group())
 
-  canRemoveMembership: (membership) ->
+  removeMembershipDuration: (membership, days) ->
+    date2 = new Date();
+    date1 = new Date(membership.createdAt);
+    timeDiff = Math.abs(date2.getTime() - date1.getTime())/ (1000 * 3600 * 24);
+    (timeDiff <= days)
+
+  canRemoveMembership: (membership) -> 
     membership and
     (membership.user() == Session.user() or @canAdministerGroup(membership.group()))
 
