@@ -108,9 +108,9 @@ class PollService
     poll.alliance_decision_child_polls.each do |child_poll|
       if child_poll.closed?
         case child_poll.status
-        when 0
+        when "Pass"
           agree_count += 1
-        when 1
+        when "Stop"
           disagree_count += 1
         else
           others_count += 1
