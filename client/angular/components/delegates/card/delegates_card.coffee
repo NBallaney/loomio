@@ -9,5 +9,5 @@ angular.module('loomioApp').directive 'delegatesCard', ->
   controller: ['$scope', ($scope) ->
     $scope.manageDelegates = ->
       ModalService.open 'DelegatesModal', delegates: ->
-        Records.announcements.buildFromModel($scope.group)
+        Records.announcements.buildFromModel($scope.group.targetModel())
   ]
