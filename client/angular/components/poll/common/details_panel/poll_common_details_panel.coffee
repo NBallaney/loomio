@@ -83,7 +83,7 @@ angular.module('loomioApp').directive 'pollCommonDetailsPanel', ->
             "Member: #{$scope.memberArray[$scope.poll.additionalData.user_id]}"
           else
             "Group: #{$scope.groupArray[$scope.poll.additionalData.group_id]}"
-      else if $scope.poll.pollCategoryName == "Invite Member"
+      else if $scope.poll.pollCategoryName == "Invite Member"        
         if $scope.poll.additionalData
           users = ''
           angular.forEach $scope.poll.additionalData.user_ids, (value) ->
@@ -92,7 +92,14 @@ angular.module('loomioApp').directive 'pollCommonDetailsPanel', ->
             else
               connector = ", "
             users = users+connector+$scope.memberArray[value]  
-            return        
+            return
+          angular.forEach $scope.poll.additionalData.emails, (value) ->
+            if users.trim() == ''
+              connector = ""
+            else
+              connector = ", "
+            users = users+connector+value
+            return         
           "Members: "+users
       else
         ""

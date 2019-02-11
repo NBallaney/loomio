@@ -10,7 +10,9 @@ angular.module('loomioApp').directive 'pollCommonForgeAlliance', ->
     $scope.selectGroupData = {}
     $scope.change_type = (group_id) ->
       $scope.poll.additionalData.group_id = group_id
-    Records.groups.fetchChildGroups($scope.poll.groupId).then((res) ->
+
+    Records.groups.getInvitableGroups($scope.poll.groupId).then((res) ->
+     
       data = []
       for group in res.groups
         data.push {"id":group.id,"name":group.full_name}
