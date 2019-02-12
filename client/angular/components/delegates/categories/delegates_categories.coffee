@@ -3,12 +3,13 @@ Records        = require 'shared/services/records'
 Session       = require 'shared/services/session'
 
 angular.module('loomioApp').directive 'delegatesCategories', ->
-  # scope: {delegates: '='}
+  # scope: {group: '='}
   templateUrl: 'generated/components/delegates/categories/delegates_categories.html'
   controller: ['$scope', ($scope) ->
     $scope.user = Session.user()
     $scope.fetchRecords = ->
-      Records.pollCategories.fetch()
+      console.log $scope
+      # Records.groups.getGroupCategories($scope.poll.groupId)
     applyLoadingFunction $scope, 'fetchRecords'
     $scope.fetchRecords().then((res) ->
       $scope.pollCategories = res.categories

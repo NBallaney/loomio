@@ -68,19 +68,39 @@ angular.module('loomioApp').directive 'pollCommonDetailsPanel', ->
         "Parent Group: #{ $scope.groupArray[$scope.poll.allianceParentId] }"
       else if $scope.poll.pollCategoryName == "Forge Alliance"
         if $scope.poll.additionalData
-          "Child Group: #{ $scope.groupArray[$scope.poll.additionalData.group_id] }"
+          "Child Group: #{ $scope.groupArray[$scope.poll.additionalData.group_id] }<br/><br/> Parent Group: #{$scope.groupArray[$scope.poll.groupId]}"
+        else
+          "Parent Group: #{$scope.groupArray[$scope.poll.groupId]}"
       else if $scope.poll.pollCategoryName == "Increase Voting Power" || $scope.poll.pollCategoryName == "Decrease Voting Power"
         if $scope.poll.additionalData
-          if $scope.poll.additionalData.member_type=="member"
-            "Member: #{$scope.memberArray[$scope.poll.additionalData.member_id]} <br/><br/>Vote Power: #{$scope.poll.additionalData.vote_power}"
+          if $scope.poll.additionalData.member_type=="user"
+            "Member: #{$scope.memberArray[$scope.poll.additionalData.user_id]} <br/><br/>Vote Power: #{$scope.poll.additionalData.vote_power}"
           else
             "Group: #{$scope.groupArray[$scope.poll.additionalData.group_id]} <br/><br/>Vote Power: #{$scope.poll.additionalData.vote_power}"
       else if $scope.poll.pollCategoryName == "Exile Member"
         if $scope.poll.additionalData
-          if $scope.poll.additionalData.member_type=="member"
+          if $scope.poll.additionalData.member_type=="user"
             "Member: #{$scope.memberArray[$scope.poll.additionalData.user_id]}"
           else
             "Group: #{$scope.groupArray[$scope.poll.additionalData.group_id]}"
+      else if $scope.poll.pollCategoryName == "Invite Member"        
+        if $scope.poll.additionalData
+          users = ''
+          angular.forEach $scope.poll.additionalData.user_ids, (value) ->
+            if users.trim() == ''
+              connector = ""
+            else
+              connector = ", "
+            users = users+connector+$scope.memberArray[value]  
+            return
+          angular.forEach $scope.poll.additionalData.emails, (value) ->
+            if users.trim() == ''
+              connector = ""
+            else
+              connector = ", "
+            users = users+connector+value
+            return         
+          "Members: "+users
       else
         ""
 
