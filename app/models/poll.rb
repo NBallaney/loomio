@@ -44,7 +44,7 @@ class Poll < ApplicationRecord
   has_one    :alliance_child_poll, -> { includes(:poll_category).where(poll_categories: {name: 'Forge Alliance'})}, class_name: 'Poll', foreign_key: 'alliance_parent_id'
   belongs_to :alliance_parent_poll, -> { includes(:poll_category).where(poll_categories: {name: 'Forge Alliance'})}, class_name: 'Poll', foreign_key: 'alliance_parent_id'
   has_many   :alliance_decision_child_polls, -> { includes(:poll_category).where(poll_categories: {name: 'Alliance Decision'})}, class_name: 'Poll', foreign_key: 'alliance_parent_id'
-  # belongs_to :alliance_decision_parent_poll, class_name: 'Poll', foreign_key: 'alliance_parent_id', :conditions => "polls.poll_categories.name = 'Alliance Decision'"
+  belongs_to :alliance_decision_parent_poll, class_name: 'Poll', foreign_key: 'alliance_parent_id'
 
   belongs_to :discussion
   belongs_to :group, class_name: "FormalGroup"

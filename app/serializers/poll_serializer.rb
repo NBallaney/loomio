@@ -7,7 +7,7 @@ class PollSerializer < ActiveModel::Serializer
              :notify_on_participate, :subscribed, :example, :anonymous, :pass_percentage, :stop_percentage,
              :resubmission_active_days, :pass_percentage_drop, :resubmission_count, :poll_category_id,
              :poll_category_name, :status, :parent_id, :can_respond_maybe, :parents_names,
-             :alliance_parent_id, :additional_data
+             :alliance_parent_id, :additional_data, :parent_group_id
 
 
   has_one :author, serializer: UserSerializer, root: :users
@@ -54,5 +54,18 @@ class PollSerializer < ActiveModel::Serializer
 
   def include_matrix_counts?
     object.chart_type == 'matrix'
+  end
+
+  def parent_group_id
+    object.alliance_decision_parent_poll.try(:group_id)
+  end
+
+  def additional_data
+    data = object.additional_data
+    if data
+      data["emails"] = JSON.parse(data["emails"]) if( data["emails"] and data["emails"].class == String) rescue nil
+      data["user_ids"] = JSON.parse(data["user_ids"]) if( data["user_ids"] and data["user_ids"].class == String) rescue nil
+    end
+    data
   end
 end
