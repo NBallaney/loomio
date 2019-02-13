@@ -4,7 +4,8 @@
     %md-option{ng-repeat: "member in voting_power_type", ng-value: "member.id"} {{member.name}}
 
   %md-input-container.md-block
-    %poll_common_forge_alliance.animated{ng-if:"poll.additionalData.member_type == 'group'"}
+    -# %poll_common_forge_alliance.animated{ng-if:"poll.additionalData.member_type == 'group'"}
+    %poll_common_group_voting_power.animated{ng-if:"poll.additionalData.member_type == 'group'"}
   %md-input-container.md-block
     %poll_common_group_member.animated{ng-if:"poll.additionalData.member_type == 'user'"}
 

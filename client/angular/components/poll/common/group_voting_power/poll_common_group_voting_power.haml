@@ -1,0 +1,5 @@
+.poll-common-group-voting-power
+    %label{for: "group-field"} {{"Select Group"}}
+    %md-select.poll-common-form-fields__group#group-field{ng-model: "poll.additionalData.group_id",ng-required: "true",ng-change:"change_type(poll.additionalData.group_id)"}
+        %md-option{ng-repeat : "group in groupData", ng-value : "group.id"} {{ group.name }}
+    %validation_errors{subject: "poll", field: "pollGroup"}

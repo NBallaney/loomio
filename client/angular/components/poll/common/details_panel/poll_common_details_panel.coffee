@@ -65,7 +65,8 @@ angular.module('loomioApp').directive 'pollCommonDetailsPanel', ->
 
     $scope.getGroupDetail = ->
       if $scope.poll.pollCategoryName == "Alliance Decision"
-        "Parent Group: #{ $scope.groupArray[$scope.poll.allianceParentId] }"
+        # console.log($scope.poll)
+        "Parent Group: #{ $scope.groupArray[$scope.poll.parentGroupId] }"
       else if $scope.poll.pollCategoryName == "Forge Alliance"
         if $scope.poll.additionalData
           "Child Group: #{ $scope.groupArray[$scope.poll.additionalData.group_id] }<br/><br/> Parent Group: #{$scope.groupArray[$scope.poll.groupId]}"
