@@ -7,11 +7,24 @@ angular.module('loomioApp').directive 'delegatesCategories', ->
   templateUrl: 'generated/components/delegates/categories/delegates_categories.html'
   controller: ['$scope', ($scope) ->
     $scope.user = Session.user()
+    getCookie =(cname) ->
+      name = cname + '='
+      decodedCookie = decodeURIComponent(document.cookie)
+      ca = decodedCookie.split(';')
+      i = 0
+      while i < ca.length
+        c = ca[i]
+        while c.charAt(0) == ' '
+          c = c.substring(1)
+        if c.indexOf(name) == 0
+          return c.substring(name.length, c.length)
+        i++
+      ''
     $scope.fetchRecords = ->
-      console.log $scope
-      # Records.groups.getGroupCategories($scope.poll.groupId)
+      Records.groups.getGroupCategories(getCookie('groupId'))
+
     applyLoadingFunction $scope, 'fetchRecords'
     $scope.fetchRecords().then((res) ->
-      $scope.pollCategories = res.categories
+      $scope.pollCategories = res.poll_categories
     )
 ]
