@@ -257,4 +257,4 @@ module.exports = new class AbilityService
       (poll.isClosed() and @canAdministerPoll(poll))
 
   canResubmitPoll: (poll) ->
-    poll.isClosed() and @canAdministerPoll(poll) and poll.isProposal() && poll.isReSubmittable()
+    poll.isClosed() and @canAdministerPoll(poll) and poll.isProposal() && poll.isReSubmittable() and poll.pollCategoryName!="Alliance Decision"

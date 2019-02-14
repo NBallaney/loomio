@@ -18,9 +18,35 @@ angular.module('loomioApp').directive 'delegatesForm', ->
     $scope.audiences      = -> audiencesFor($scope.delegates.model)
     $scope.audienceValues = -> audienceValuesFor($scope.delegates.model)
 
+    getCookie =(cname) ->
+      name = cname + '='
+      decodedCookie = decodeURIComponent(document.cookie)
+      ca = decodedCookie.split(';')
+      i = 0
+      while i < ca.length
+        c = ca[i]
+        while c.charAt(0) == ' '
+          c = c.substring(1)
+        if c.indexOf(name) == 0
+          return c.substring(name.length, c.length)
+        i++
+      ''
+    $scope.all_members = []
+    Records.groups.fetchChildGroups(getCookie('groupId')).then (members) ->
+        if members.status == 200
+          $scope.recordGroupMembers = members.members
+          members.members.each (value) ->
+            $scope.all_members.push(value.email)
+            return
+        else
+          $scope.recordGroupMembers = []
+   
+
     $scope.search = (query) ->
-      Records.announcements.search(query, $scope.delegates.model).then (users) ->
-        utils.parseJSONList(users)
+      console.log($scope.all_members)
+      users = $scope.recordGroupMembers.filter((searchUser) => searchUser.email.toLowerCase().indexOf(query.toLowerCase()) > -1)
+      utils.parseJSONList(users)
+
 
     buildRecipientFromEmail = (email) ->
       email: email
@@ -28,6 +54,7 @@ angular.module('loomioApp').directive 'delegatesForm', ->
       avatarKind: 'mdi-email-outline'
       
     $scope.addRecipient = (recipient) ->
+      console.log(recipient)
       return unless recipient
       _.each recipient.emails, (email) -> $scope.addRecipient buildRecipientFromEmail(email)
       if !recipient.emails && !_.contains(_.pluck($scope.delegates.recipients, "emailHash"), recipient.emailHash)
