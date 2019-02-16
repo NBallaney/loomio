@@ -9,6 +9,7 @@ class API::RestfulController < ActionController::Base
   around_action :use_preferred_locale       # LocalesHelper
   before_action :set_paper_trail_whodunnit  # gem 'paper_trail'
   before_action :set_raven_context          # SentryRavenHelper
+  after_action :set_response_headers
   snorlax_used_rest!                        # gem 'snorlax'
 
   private
@@ -72,6 +73,12 @@ class API::RestfulController < ActionController::Base
 
   def default_scope
     { current_user: current_user }
+  end
+
+  def set_response_headers
+    response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+    response.headers['Pragma'] = 'no-cache'
+    response.headers['Expires'] = '0'
   end
 
 end
