@@ -20,3 +20,6 @@ module.exports = class DelegatesInterface extends BaseRecordsInterface
       poll_category_id: categoryId
       delegate_ids: delegateIds
     })
+
+  fetchDelegates: (user,category) ->
+    @remote.get "#{user}/fetch_delegates?poll_category_id=#{category}"

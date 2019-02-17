@@ -6,6 +6,7 @@ utils          = require 'shared/record_store/utils'
 LmoUrlService  = require 'shared/services/lmo_url_service'
 AbilityService = require 'shared/services/ability_service'
 FlashService   = require 'shared/services/flash_service'
+Session       = require 'shared/services/session' 
 { audiencesFor, audienceValuesFor } = require 'shared/helpers/announcement'
 
 angular.module('loomioApp').directive 'delegatesForm', ->
@@ -14,10 +15,10 @@ angular.module('loomioApp').directive 'delegatesForm', ->
   templateUrl: 'generated/components/delegates/form/delegates_form.html'
   controller: ['$scope', ($scope) ->
     $scope.delegates = {}
-    $scope.delegates.recipients = []
     $scope.audiences      = -> audiencesFor($scope.delegates.model)
     $scope.audienceValues = -> audienceValuesFor($scope.delegates.model)
 
+  
     getCookie =(cname) ->
       name = cname + '='
       decodedCookie = decodeURIComponent(document.cookie)
@@ -31,21 +32,23 @@ angular.module('loomioApp').directive 'delegatesForm', ->
           return c.substring(name.length, c.length)
         i++
       ''
+
     $scope.all_members = []
+
     Records.groups.fetchChildGroups(getCookie('groupId')).then (members) ->
-        if members.status == 200
-          $scope.recordGroupMembers = members.members
-          members.members.each (value) ->
-            $scope.all_members.push(value.email)
-            return
-        else
-          $scope.recordGroupMembers = []
+      if members.status == 200
+        $scope.recordGroupMembers = members.members
+        members.members.each (value) ->
+          $scope.all_members.push(value.email)
+          return
+      else
+        $scope.recordGroupMembers = []
    
 
     $scope.search = (query) ->
-      console.log($scope.all_members)
-      users = $scope.recordGroupMembers.filter((searchUser) => searchUser.email.toLowerCase().indexOf(query.toLowerCase()) > -1)
-      utils.parseJSONList(users)
+      if query != ''
+        users = $scope.recordGroupMembers.filter((searchUser) => searchUser.email.toLowerCase().indexOf(query.toLowerCase()) > -1)
+        utils.parseJSONList(users)
 
 
     buildRecipientFromEmail = (email) ->
@@ -54,16 +57,23 @@ angular.module('loomioApp').directive 'delegatesForm', ->
       avatarKind: 'mdi-email-outline'
       
     $scope.addRecipient = (recipient) ->
-      console.log(recipient)
-      return unless recipient
-      _.each recipient.emails, (email) -> $scope.addRecipient buildRecipientFromEmail(email)
-      if !recipient.emails && !_.contains(_.pluck($scope.delegates.recipients, "emailHash"), recipient.emailHash)
-        $scope.delegates.recipients.unshift recipient
-      $scope.selected = undefined
-      $scope.query = ''
+      if recipient
+        if $scope.user.memberr_ids.indexOf(recipient.id) < 0
+          $scope.user.memberr_ids.push(recipient.id)
+          $scope.user.memberr.push(recipient)
+      $scope.searchText = ""
+
+    $scope.removeRecipient = (recipient) ->
+      index = $scope.user.memberr_ids.indexOf(recipient.id)
+      $scope.user.memberr_ids.splice(index, 1)
+      angular.forEach $scope.user.memberr, (value, key) ->        
+        if value.id == recipient.id
+          index1 = $scope.user.memberr.indexOf(recipient)
+          $scope.user.memberr.splice(key, 1)
+
 
     EventBus.listen $scope, 'removeRecipient', (_event, recipient) ->
-      _.pull $scope.delegates.recipients, recipient
+      _.pull $scope.user.memberr, recipient
 
     $scope.loadAudience = (kind) ->
       Records.announcements.fetchAudience($scope.delegates.model, kind).then (data) ->
