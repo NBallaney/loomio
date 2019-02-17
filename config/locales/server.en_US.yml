@@ -34,6 +34,8 @@ en_US:
       cannot_add_options: Cannot add options to this poll
       cannot_remove_options: Cannot remove options from this poll
       must_have_options: Must have at least one poll option
+      increase_vote_power: Must be greater than 1 and greater than users's current vote power.
+      decrease_vote_power: Must be greater than 0 and less than users's current vote power.
     export:
       percent_voted: "%{num}/%{denom} (%{percent}) members have stated their position"
       title: Title

@@ -171,7 +171,7 @@ class PollService
           end
         elsif data["member_type"] == "user"
           pu = PowerUser.find_by(user_id: data["user_id"], group_id: poll.group_id)
-          if( pg && (data["vote_power"].to_i > 0))
+          if( pu && (data["vote_power"].to_i > 0))
             pu.vote_power = data["vote_power"]
             pu.save
           end

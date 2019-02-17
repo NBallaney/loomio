@@ -103,6 +103,7 @@ class Poll < ApplicationRecord
   validate :valid_minimum_stance_choices
   validate :closes_in_future
   validate :require_custom_fields
+  validate :check_valid_data_attributes
   validates :resubmission_count, numericality: { less_than: 4, message: "Poll can only submitted 3 times." }
   validates :poll_category, presence: {message: ->(object, data) do "Please choose a category" end}, if: :type_proposal
   validates :group, presence: {message: ->(object, data) do "Please choose a Group" end}, if: :type_proposal
@@ -411,6 +412,37 @@ class Poll < ApplicationRecord
   def require_custom_fields
     Array(required_custom_fields).each do |field|
       errors.add(field, I18n.t(:"activerecord.errors.messages.blank")) if custom_fields[field].nil?
+    end
+  end
+
+  def check_valid_data_attributes
+    increase_voting_data if self.poll_category.name == "Increase Voting Power"
+    decrease_voting_data if self.poll_category.name == "Decrease Voting Power"
+  end
+
+  def increase_voting_data
+    data = self.additional_data
+    if data["member_type"] == "group"
+      pg = PowerGroup.find_by(parent_id: poll.group_id, group_id: data["group_id"])
+      return if (pg ? (data["vote_power"].to_i > pg.vote_power) : (data["vote_power"].to_i > 1))
+      self.errors.add(:vote_power, I18n.t(:"poll.error.increase_vote_power"))
+    elsif data["member_type"] == "user"
+      pu = PowerUser.find_by(user_id: data["user_id"], group_id: poll.group_id)
+      return if (pu ? (data["vote_power"].to_i > pu.vote_power) : (data["vote_power"].to_i > 1))
+      self.errors.add(:vote_power, I18n.t(:"poll.error.increase_vote_power"))
+    end
+  end
+
+  def decrease_voting_data
+    data = self.additional_data
+    if data["member_type"] == "group"
+      pg = PowerGroup.find_by(parent_id: poll.group_id, group_id: data["group_id"])
+      return if (pg ? ((data["vote_power"].to_i < pg.vote_power) && (data["vote_power"].to_i > 0) ) : (data["vote_power"].to_i > 0))
+      self.errors.add(:vote_power, I18n.t(:"poll.error.decrease_vote_power"))
+    elsif data["member_type"] == "user"
+      pu = PowerUser.find_by(user_id: data["user_id"], group_id: poll.group_id)
+      return if (pu ? ((data["vote_power"].to_i < pu.vote_power) && (data["vote_power"].to_i > 0)) : (data["vote_power"].to_i > 0))
+      self.errors.add(:vote_power, I18n.t(:"poll.error.decrease_vote_power"))
     end
   end
 end
