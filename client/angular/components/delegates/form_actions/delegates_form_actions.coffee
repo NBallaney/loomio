@@ -11,5 +11,5 @@ angular.module('loomioApp').directive 'delegatesFormActions', ->
     # $scope.submit = -> EventBus.broadcast $scope.$parent, 'assignDelegates', $scope.user
     $scope.submit = () ->
       Records.delegates.assignDelegates($scope.user.id, $scope.user.categoryId, $scope.user.memberr_ids)
-      console.log($scope.$emit('$close'))
+      $scope.$emit('$close')
   ]

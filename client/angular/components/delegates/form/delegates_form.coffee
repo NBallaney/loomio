@@ -17,7 +17,7 @@ angular.module('loomioApp').directive 'delegatesForm', ->
     $scope.delegates = {}
     $scope.audiences      = -> audiencesFor($scope.delegates.model)
     $scope.audienceValues = -> audienceValuesFor($scope.delegates.model)
-
+    user = Session.user()
   
     getCookie =(cname) ->
       name = cname + '='
@@ -47,7 +47,7 @@ angular.module('loomioApp').directive 'delegatesForm', ->
 
     $scope.search = (query) ->
       if query != ''
-        users = $scope.recordGroupMembers.filter((searchUser) => searchUser.email.toLowerCase().indexOf(query.toLowerCase()) > -1)
+        users = $scope.recordGroupMembers.filter((searchUser) => searchUser.email.toLowerCase().indexOf(query.toLowerCase()) > -1 && searchUser.id != user.id )
         utils.parseJSONList(users)
 
 
@@ -57,10 +57,12 @@ angular.module('loomioApp').directive 'delegatesForm', ->
       avatarKind: 'mdi-email-outline'
       
     $scope.addRecipient = (recipient) ->
-      if recipient
-        if $scope.user.memberr_ids.indexOf(recipient.id) < 0
-          $scope.user.memberr_ids.push(recipient.id)
-          $scope.user.memberr.push(recipient)
+      if $scope.user.memberr_ids.length < 10
+        if user.id != recipient.id
+          if recipient
+            if $scope.user.memberr_ids.indexOf(recipient.id) < 0
+              $scope.user.memberr_ids.push(recipient.id)
+              $scope.user.memberr.push(recipient)
       $scope.searchText = ""
 
     $scope.removeRecipient = (recipient) ->
