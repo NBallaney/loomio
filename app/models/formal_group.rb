@@ -46,6 +46,7 @@ class FormalGroup < Group
   has_many :poll_categories, foreign_key: 'group_id'
   has_many :power_users, foreign_key: "group_id", dependent: :destroy
   has_many :power_groups, foreign_key: "parent_id", dependent: :destroy
+  has_many :group_vote_powers, foreign_key: "group_id", class_name: "PowerGroup", dependent: :destroy
 
   belongs_to :cohort
   belongs_to :default_group_cover

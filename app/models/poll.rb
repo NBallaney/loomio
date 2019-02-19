@@ -103,7 +103,7 @@ class Poll < ApplicationRecord
   validate :valid_minimum_stance_choices
   validate :closes_in_future
   validate :require_custom_fields
-  validate :check_valid_data_attributes
+  validate :check_valid_data_attributes, if: -> {self.poll_category_id != nil }
   validates :resubmission_count, numericality: { less_than: 4, message: "Poll can only submitted 3 times." }
   validates :poll_category, presence: {message: ->(object, data) do "Please choose a category" end}, if: :type_proposal
   validates :group, presence: {message: ->(object, data) do "Please choose a Group" end}, if: :type_proposal
