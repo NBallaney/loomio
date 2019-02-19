@@ -38,9 +38,10 @@ module.exports = class GroupRecordsInterface extends BaseRecordsInterface
 
   
   getGroupCategories: (group) ->
-    console.log(group)
     @remote.get group+".json"
 
   getInvitableGroups: (group) ->
     @remote.get "#{group}/invitable_groups.json"
+
+  
 

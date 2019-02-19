@@ -2,11 +2,26 @@
   .delegates-form__invite
     %delegates_categories{user: "user"}
     %p.delegates-form__help.md-subhead{translate: "delegates.form.helptext"}>
-    %md-list
-      %md-autocomplete{md-search-text: "query", md-autoselect: "true", md-autofocus: "true", md-selected-item-change: "addRecipient(recipient)", md-item-text: "recipient.email", placeholder: "{{'delegates.form.placeholder' | translate}}", md-items: "recipient in search(query)", md-min-length: "3", md-delay: "150"}
-        %md-item-template
-          %delegates_chip{user: "recipient"}
+    -# %md-list
+    -#   %md-autocomplete{md-search-text: "query", md-autoselect: "true", md-autofocus: "true", md-selected-item-change: "addRecipient(recipient)", md-item-text: "recipient.email", placeholder: "{{'delegates.form.placeholder' | translate}}", md-items: "recipient in search(query)", md-min-length: "3", md-delay: "150"}
+    -#     %md-item-template
+    -#       %delegates_chip{user: "recipient"}
 
+    %md-list
+      %md-autocomplete{md-item-text: "searchText", md-items: "item in search(searchText)", md-search-text: "searchText", md-selected-item: "selectedItem", md-selected-item-change: "addRecipient(item)", md-min-length: 3}
+        %md-item-template
+          %span{"md-highlight-text" => "searchText"} {{item.email}}
+        %md-not-found
+          No matches found
+        
+        
     %md-list.delegates-form__invited
-      %md-list-item.delegates-form__list-item{ng-repeat: "recipient in recipients track by recipient.key"}
-        %delegates_chip{user: "recipient", show-close: "true"}
+      %md-list-item.delegates-form__list-item{ng-repeat: "recipient in user.memberr track by recipient.id"}
+        
+        .delegates-chip.lmo-md-actions{data-id: "{{recipient.id}}"}
+          .delegates-chip__content.lmo-flex--row.lmo-flex__center
+            %user_avatar.lmo-margin-right{user: "recipient", size: "small", no-link: "true"}
+            %span.md-body-2 {{ recipient.name || recipient.email }}
+          .delegates-chip__action
+            %md-button.md-button--tiny{ng-click: "removeRecipient(recipient)"}
+              %i.mdi.mdi-24px.mdi-window-close
