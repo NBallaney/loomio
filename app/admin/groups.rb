@@ -25,25 +25,25 @@ ActiveAdmin.register FormalGroup, as: 'Group' do
   filter :handle
   filter :analytics_enabled
 
-  scope :parents_only
+  # scope :parents_only
 
-  batch_action :delete_spam do |group_ids|
-    group_ids.each do |group_id|
-      if Group.exists?(group_id)
-        group = Group.find(group_id)
-        user = group.creator || group.admins.first
-        if user
-          UserService.delete_spam(user)
-        end
-      end
+  # batch_action :delete_spam do |group_ids|
+  #   group_ids.each do |group_id|
+  #     if Group.exists?(group_id)
+  #       group = Group.find(group_id)
+  #       user = group.creator || group.admins.first
+  #       if user
+  #         UserService.delete_spam(user)
+  #       end
+  #     end
 
-      if Group.exists?(group_id)
-        Group.find(group_id).destroy
-      end
-    end
+  #     if Group.exists?(group_id)
+  #       Group.find(group_id).destroy
+  #     end
+  #   end
 
-    redirect_to admin_groups_path, notice: "#{group_ids.size} spammy groups deleted"
-  end
+  #   redirect_to admin_groups_path, notice: "#{group_ids.size} spammy groups deleted"
+  # end
 
   index :download_links => false do
     selectable_column
