@@ -58,7 +58,7 @@ angular.module('loomioApp').directive 'membershipCard', ->
         return false
 
     $scope.timeDuration = ->
-      if (new Date() - new Date($scope.group.createdAt))/86400000 > 10
+      if (new Date() - new Date($scope.group.createdAt))/86400000 > 7
         return false
       else
         return true
