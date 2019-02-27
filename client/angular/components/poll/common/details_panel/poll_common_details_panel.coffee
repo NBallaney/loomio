@@ -80,7 +80,7 @@ angular.module('loomioApp').directive 'pollCommonDetailsPanel', ->
             "Group: #{$scope.groupArray[$scope.poll.additionalData.group_id]} <br/><br/>Vote Power: #{$scope.poll.additionalData.vote_power}"
       else if $scope.poll.pollCategoryName == "Exile Member"
         if $scope.poll.additionalData
-          if $scope.poll.additionalData.member_type=="user"
+          if $scope.poll.additionalData.member_type=="member"
             "Member: #{$scope.memberArray[$scope.poll.additionalData.user_id]}"
           else
             "Group: #{$scope.groupArray[$scope.poll.additionalData.group_id]}"
