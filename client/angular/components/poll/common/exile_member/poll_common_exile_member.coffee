@@ -20,7 +20,7 @@ angular.module('loomioApp').directive 'pollCommonExileMember', ->
         $scope.poll.additionalData.member_type = "group"
       else
         $scope.poll.additionalData.user_id = parseInt(id)
-        $scope.poll.additionalData.member_type = "member"
+        $scope.poll.additionalData.member_type = "user"
 
     $scope.fetchGroupMembers = ->
       Records.groups.fetchChildGroups($scope.poll.groupId).then (members) ->
