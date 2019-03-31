@@ -73,8 +73,8 @@ class PollService
 
   def self.do_closing_work(poll:)
     #poll.update(closed_at: Time.now) unless poll.closed_at.present?
-    determine_status poll
-    special_categories_hook poll
+    determine_status(poll) if poll.poll_type == "proposal"
+    special_categories_hook(poll) if poll.poll_type == "proposal"
     poll.poll_did_not_votes.delete_all
     poll.poll_did_not_votes.import poll.undecided.map { |user| PollDidNotVote.new(user: user, poll: poll) }, validate: false
     poll.update(closed_at: Time.now) unless poll.closed_at.present?
