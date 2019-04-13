@@ -7,7 +7,7 @@ class PollSerializer < ActiveModel::Serializer
              :notify_on_participate, :subscribed, :example, :anonymous, :pass_percentage, :stop_percentage,
              :resubmission_active_days, :pass_percentage_drop, :resubmission_count, :poll_category_id,
              :poll_category_name, :status, :parent_id, :can_respond_maybe, :parents_names,
-             :alliance_parent_id, :additional_data, :parent_group_id
+             :alliance_parent_id, :additional_data, :parent_group_id, :alliance_decision_votes
 
 
   has_one :author, serializer: UserSerializer, root: :users
@@ -42,6 +42,25 @@ class PollSerializer < ActiveModel::Serializer
   def parents_names
     parents = get_parents object
     parents.map(&:title)
+  end
+
+  def alliance_decision_votes
+    votes = []
+    object.alliance_decision_child_polls.each do |child_poll|
+      if child_poll.closed?
+        case child_poll.status
+        when "Pass"
+          votes << {group_id: child_poll.group_id, vote: "agree"}
+        when "Stop"
+          votes << {group_id: child_poll.group_id, vote: "disagree"}
+        else
+          votes << {group_id: child_poll.group_id, vote: "abstain"}
+        end
+      elsif object.closed?
+        votes << {group_id: child_poll.group_id, vote: "abstain"}
+      end
+    end
+    votes
   end
 
   def my_stance

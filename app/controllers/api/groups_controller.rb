@@ -15,7 +15,8 @@ class API::GroupsController < API::RestfulController
   def invitable_groups
     self.resource = load_and_authorize(:formal_group)
     ids = resource.child_groups.pluck(:id) << resource.id
-    groups = FormalGroup.published.where("id not in (?)",ids)
+    groups = current_user.formal_groups.published.where("groups.id not in (?)",ids.flatten)
+    #groups = FormalGroup.published.where("id not in (?)",ids)
     respond_to do |f|
       f.json {render json: {:groups => groups, :status => 200}.as_json}
     end
@@ -28,6 +29,15 @@ class API::GroupsController < API::RestfulController
     parent_groups = GroupMembership.where(child_group_id: resource.id).map(&:parent_group)
     respond_to do |f|
       f.json {render json: {:groups => groups, members: members, parent_groups: parent_groups, :status => 200}.as_json}
+    end
+  end
+
+  def member_vote_powers
+    self.resource = load_and_authorize(:formal_group)
+    power_users = PowerUser.where(group_id: resource.id)
+    power_groups = PowerGroup.where(parent_id: resource.id)
+    respond_to do |f|
+      f.json {render json: {:power_users => power_users, power_groups: power_groups, :status => 200}.as_json}
     end
   end
 

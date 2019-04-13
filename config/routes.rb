@@ -66,6 +66,7 @@ Loomio::Application.routes.draw do
         post 'upload_photo/:kind', action: :upload_photo
         get :invitable_groups
         get :group_members
+        get :member_vote_powers
       end
       get :count_explore_results, on: :collection
     end

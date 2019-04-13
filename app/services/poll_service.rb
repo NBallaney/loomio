@@ -127,11 +127,18 @@ class PollService
     when "Forge Alliance"
       if poll.alliance_parent_id
         if poll.status == "Pass" && poll.majority =="yes"
-          GroupMembership.create(parent_group_id: poll.alliance_parent_poll.group_id, child_group_id: poll.group_id)
+          parent_poll = poll.alliance_decision_parent_poll
+          is_parent = parent_poll.additional_data["parent"].present?
+          if is_parent
+            GroupMembership.create(parent_group_id: poll.group_id, child_group_id: parent_poll.group_id)
+          else
+            GroupMembership.create(parent_group_id: parent_poll.group_id, child_group_id: poll.group_id)
+          end
         end
       else
         if poll.status == "Pass" && poll.majority =="yes"
-          title = "Parent Group Invitation: #{poll.title}"
+          is_parent = poll.additional_data["parent"].present?
+          title = is_parent ? "Child Group Invitation: #{poll.title}" : "Parent Group Invitation: #{poll.title}"
           group = Group.find(poll.additional_data["group_id"])
           category = group.poll_categories.where(name: "Forge Alliance").first
             #"pass_percentage", "stop_percentage", "resubmission_active_days", 

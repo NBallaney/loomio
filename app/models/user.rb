@@ -128,6 +128,7 @@ class User < ApplicationRecord
   has_many :login_tokens, dependent: :destroy
   has_many :delegate_users
   has_many :delegates, through: :delegate_users
+  has_many :power_users
 
   has_one :deactivation_response,
           class_name: 'UserDeactivationResponse',
