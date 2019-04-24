@@ -183,7 +183,7 @@ class FormalGroup < Group
   def create_special_categories
     categories = ["Forge Alliance", "Alliance Decision", "Increase Voting Power",
                   "Decrease Voting Power", "Invite Member", "Exile Member",
-                  "General"]
+                  "General", "Modify Consensus Thresholds", "Alliance Parent Decision"]
     categories.each do |category|
       self.poll_categories.create(name: category, pass_percentage: 70,
                                   stop_percentage: 30, active_days: 5, resubmission_active_days: 3,

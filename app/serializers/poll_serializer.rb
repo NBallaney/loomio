@@ -50,14 +50,14 @@ class PollSerializer < ActiveModel::Serializer
       if child_poll.closed?
         case child_poll.status
         when "Pass"
-          votes << {group_id: child_poll.group_id, vote: "agree"}
+          votes << {group_id: child_poll.group_id, group_name: child_poll.group.name, vote: "agree"}
         when "Stop"
-          votes << {group_id: child_poll.group_id, vote: "disagree"}
+          votes << {group_id: child_poll.group_id, group_name: child_poll.group.name, vote: "disagree"}
         else
-          votes << {group_id: child_poll.group_id, vote: "abstain"}
+          votes << {group_id: child_poll.group_id, group_name: child_poll.group.name, vote: "abstain"}
         end
       elsif object.closed?
-        votes << {group_id: child_poll.group_id, vote: "abstain"}
+        votes << {group_id: child_poll.group_id, group_name: child_poll.group.name, vote: "abstain"}
       end
     end
     votes

@@ -22,6 +22,15 @@ class API::GroupsController < API::RestfulController
     end
   end
 
+  def invitable_parent_groups
+    self.resource = load_and_authorize(:formal_group)
+    ids = GroupMembership.where(child_group_id: resource.id).pluck(:parent_group_id) << resource.id
+    groups = current_user.formal_groups.published.where("groups.id not in (?)",ids.flatten)
+    respond_to do |f|
+      f.json {render json: {:parent_groups => groups, :status => 200}.as_json}
+    end
+  end
+
   def group_members
     self.resource = load_and_authorize(:formal_group)
     members = resource.memberships.active.map(&:user)
