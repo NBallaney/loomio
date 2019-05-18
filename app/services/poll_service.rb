@@ -210,15 +210,32 @@ class PollService
       end
     when "Modify Consensus Thresholds"
       if poll.status == "Pass" && poll.majority =="yes"
-        debugger
         data = poll.additional_data
         poll_category = poll.group.poll_categories.find_by(id: data["poll_category_id"])
         poll_category.attributes = data.slice("active_days","pass_percentage", "stop_percentage", "pass_percentage_drop", "resubmission_active_days") if poll_category
         poll_category.save
       end
+    when "Alliance Parent Decision"
+      if poll.status == "Pass" && poll.majority =="yes"
+        data = poll.additional_data
+        #parent_group = FormalGroup.find(data["group_id"])
+        #poll_category = parent_group.poll_categories.find(data["poll_category_id"])
+        addn_data = data["apd_data1"].dup
+        addn_data["apd_data1"] = data["apd_data2"].try(:dup) || {}
+        attributes = poll.attributes.slice("author_id", "title", "details", "poll_type")
+                      .merge({title: poll.title, details: poll.details, group_id: data["group_id"], 
+                           poll_category_id: data["poll_category_id"], additional_data: addn_data,
+                           poll_option_names: ["agree", "abstain", "disagree", "block"]})
+        parent_poll = poll.build_alliance_parent_decision_poll(attributes)
+        parent_poll.save
+        # poll_category = poll.group.poll_categories.find_by(id: data["poll_category_id"])
+        # poll_category.attributes = data.slice("active_days","pass_percentage", "stop_percentage", "pass_percentage_drop", "resubmission_active_days") if poll_category
+        # poll_category.save
+      end
     end
       
   end
+
 
   def self.update(poll:, params:, actor:)
     actor.ability.authorize! :update, poll

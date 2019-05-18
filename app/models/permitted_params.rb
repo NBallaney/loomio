@@ -33,8 +33,14 @@ class PermittedParams < Struct.new(:params)
      :poll_option_names, {poll_option_names: []},
      :additional_data, {additional_data: [:user_id, :group_id, :vote_power, :member_type,:member_id, :parent, :poll_category_id,
                         :pass_percentage, :stop_percentage, :active_days, :resubmission_active_days, :pass_percentage_drop,
-                        :emails, {emails: []}, :user_ids, {user_ids: []}]}]
+                        :emails, {emails: []}, :user_ids, {user_ids: []},#]}]
+                        :apd_data1, {apd_data1: [:group_id, :poll_category_id]},
+                        :apd_data2, {apd_data2: [:group_id, :poll_category_id]}
+                        # :apd_data1, {apd_data1: [:user_id, :group_id, :vote_power, :member_type,:member_id, :parent, :poll_category_id,:pass_percentage, :stop_percentage, :active_days, :resubmission_active_days, :pass_percentage_drop,:emails, {emails: []}, :user_ids, {user_ids: []}]},
+                        # :apd_data2, {apd_data2: [:user_id, :group_id, :vote_power, :member_type,:member_id, :parent, :poll_category_id,:pass_percentage, :stop_percentage, :active_days, :resubmission_active_days, :pass_percentage_drop,:emails, {emails: []}, :user_ids, {user_ids: []}]}
                         #:modify_threshold_attr, {modify_threshold_attr: [:pass_percentage, :stop_percentage, :active_days, :resubmission_active_days, :pass_percentage_drop]}]}]
+                       ]}
+    ]
   end
 
   def stance_attributes

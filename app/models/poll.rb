@@ -45,6 +45,7 @@ class Poll < ApplicationRecord
   belongs_to :alliance_parent_poll, -> { includes(:poll_category).where(poll_categories: {name: 'Forge Alliance'})}, class_name: 'Poll', foreign_key: 'alliance_parent_id'
   has_many   :alliance_decision_child_polls, -> { includes(:poll_category).where(poll_categories: {name: 'Alliance Decision'})}, class_name: 'Poll', foreign_key: 'alliance_parent_id'
   belongs_to :alliance_decision_parent_poll, class_name: 'Poll', foreign_key: 'alliance_parent_id'
+  has_one    :alliance_parent_decision_poll, class_name: 'Poll', foreign_key: 'alliance_parent_id'
 
   belongs_to :discussion
   belongs_to :group, class_name: "FormalGroup"
@@ -52,6 +53,7 @@ class Poll < ApplicationRecord
 
   after_update :remove_poll_options
   before_create :set_category_parameters, if: :type_proposal
+  before_create :manipulate_additional_data, if: :alliance_parent_decision
   after_create :create_alliance_proposal, if: :type_proposal
 
   has_many :stances, dependent: :destroy
@@ -130,6 +132,10 @@ class Poll < ApplicationRecord
 
   def type_proposal
     poll_type == "proposal"
+  end
+
+  def alliance_parent_decision
+    poll_type == "proposal" && poll_category.name == "Alliance Parent Decision"
   end
 
   def groups
@@ -355,17 +361,43 @@ class Poll < ApplicationRecord
     end
   end
 
+  def manipulate_additional_data
+  	if self.alliance_parent_id.nil?
+  	  data = self.additional_data
+  	  new_data = {}
+  	  	debugger
+  	  if data["apd_data2"].present?
+  	  	new_data = data.delete('apd_data1').dup
+  	  	new_data['apd_data1'] = data.delete('apd_data2').dup
+  	  	new_data['apd_data2'] = data.dup
+  	  else
+  	  	new_data = data.delete('apd_data1').dup
+  	  	new_data['apd_data1'] = data.dup
+  	  end
+  	  self.assign_attributes(additional_data: new_data)
+  	end
+  end
+
   def create_alliance_proposal
     if poll.group.child_groups.any?
       poll.group.child_groups.each do |group|
         poll_category = group.poll_categories.where(name: "Alliance Decision").first
-        title = "Parent Group: #{poll.title}"
-          #"pass_percentage", "stop_percentage", "resubmission_active_days", 
-          #"pass_percentage_drop")#, "poll_category_id")
-        attributes = poll.attributes.slice("author_id", "title", "details", "poll_type")
-          .merge({title: title, group_id: group.id, poll_category_id: poll_category.id,
-                  poll_option_names: ["agree", "abstain", "disagree", "block"]})
-        poll.alliance_decision_child_polls.create(attributes)
+        poll_title = poll.title.gsub("Parent Group: ", "")
+        unless( Poll.where(group_id: group.id, title: "Parent Group: #{poll_title}").any? ||  
+                Poll.where(group_id: group.id, title: poll_title).any?)
+          title = "Parent Group: #{poll_title}"
+          attributes = poll.attributes.slice("author_id", "title", "details", "poll_type")
+            .merge({title: title, group_id: group.id, poll_category_id: poll_category.id,
+                    poll_option_names: ["agree", "abstain", "disagree", "block"]})
+          poll.alliance_decision_child_polls.create(attributes)
+        end
+        # title = "Parent Group: #{poll.title}"
+        #   #"pass_percentage", "stop_percentage", "resubmission_active_days", 
+        #   #"pass_percentage_drop")#, "poll_category_id")
+        # attributes = poll.attributes.slice("author_id", "title", "details", "poll_type")
+        #   .merge({title: title, group_id: group.id, poll_category_id: poll_category.id,
+        #           poll_option_names: ["agree", "abstain", "disagree", "block"]})
+        # poll.alliance_decision_child_polls.create(attributes)
       end
     end
   end
