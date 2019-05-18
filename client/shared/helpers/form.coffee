@@ -51,6 +51,10 @@ module.exports =
     , options))
 
   submitPoll: (scope, model, options = {}) ->
+    console.log model
+    if model.poll.additionalData
+      if model.poll.additionalData.apd_data1
+        model.poll.groupId = model.poll.main_group_id
     submit(scope, model, _.merge(
       flashSuccess: "poll_#{model.pollType}_form.#{model.pollType}_#{actionName(model)}"
       prepareFn: =>
@@ -108,6 +112,7 @@ upload = (scope, model, options) ->
       )
 
 submit = (scope, model, options = {}) ->
+  
   # fetch draft from server and listen for changes to it
   if model.hasDrafts and model.isNew() and AbilityService.isLoggedIn()
     model.fetchAndRestoreDraft()

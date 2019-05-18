@@ -1,0 +1,26 @@
+.poll-common-modify-consensus-threshold  
+    
+    %md-input-container.md-block
+        %label{for: "member-type-field"} Category To Modify
+        %md-select.poll-common-modify-consensus-threshold-field___field#modify-consensus-threshold-field{ng-model: "poll.additionalData.poll_category_id",ng-required: "true", ng-change: "selectCategory(poll.additionalData.poll_category_id)"}
+            %md-option{ng-repeat: "category in category_attributes", ng-value: "category.id"} {{category.name}}
+
+    %md-input-container.md-block{style: "margin-top: 10px", ng-if: "category_selected" }
+        %label{for: "attr-active-days"} Active Days
+        %input.lmo-primary-form-input.poll-common-modify-consensus-thresholds__active_days{type: "text",style: "color: black", ng-required: "true", ng-model: "poll.additionalData.active_days"}
+    
+    %md-input-container.md-block{style: "margin-top: 10px", ng-if: "category_selected" }
+        %label{for: "attr-pass-percentage"} Pass Percentage
+        %input.lmo-primary-form-input.poll-common-modify-consensus-thresholds__pass_percentage{type: "text",style: "color: black", ng-required: "true", ng-model: "poll.additionalData.pass_percentage"}
+    
+    %md-input-container.md-block{style: "margin-top: 10px", ng-if: "category_selected" }
+        %label{for: "attr-stop-percentage"}  Stop Percentage
+        %input.lmo-primary-form-input.poll-common-modify-consensus-thresholds__stop_percentage{type: "text",style: "color: black", ng-required: "true", ng-model: "poll.additionalData.stop_percentage"}
+    
+    %md-input-container.md-block{style: "margin-top: 10px", ng-if: "category_selected" }
+        %label{for: "attr-pass-percentage-drop"}  Pass Percentage Drop
+        %input.lmo-primary-form-input.poll-common-modify-consensus-thresholds__pass_percentage_drop{type: "text",style: "color: black", ng-required: "true", ng-model: "poll.additionalData.pass_percentage_drop"}
+
+    %md-input-container.md-block{style: "margin-top: 10px", ng-if: "category_selected" }
+        %label{for: "attr-resubmission-active-days"}  Resubmission Active Days
+        %input.lmo-primary-form-input.poll-common-modify-consensus-thresholds__resubmission_active_days{type: "text",style: "color: black", ng-required: "true", ng-model: "poll.additionalData.resubmission_active_days"}

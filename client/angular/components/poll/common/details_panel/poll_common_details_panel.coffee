@@ -45,12 +45,16 @@ angular.module('loomioApp').directive 'pollCommonDetailsPanel', ->
     ]
     $scope.groupArray = []
     $scope.memberArray = []
-
+    $scope.category_att = []
     Records.groups.fetch().then((res) ->
       data = []
       for group in res.groups
         $scope.groupArray[group.id]=group.full_name
     )
+
+    Records.groups.fetchCategoryAttributes($scope.poll.groupId).then (attributes) ->
+      angular.forEach attributes.poll_categories, (value,key) ->
+        $scope.category_att[value.id] = value.name
 
     Records.groups.fetchChildGroups($scope.poll.groupId).then (members) ->
       if members.status == 200
@@ -69,7 +73,11 @@ angular.module('loomioApp').directive 'pollCommonDetailsPanel', ->
         "Parent Group: #{ $scope.groupArray[$scope.poll.parentGroupId] }"
       else if $scope.poll.pollCategoryName == "Forge Alliance"
         if $scope.poll.additionalData
-          "Child Group: #{ $scope.groupArray[$scope.poll.additionalData.group_id] }<br/><br/> Parent Group: #{$scope.groupArray[$scope.poll.groupId]}"
+          if $scope.poll.additionalData.parent == true
+            datatype = "Parent"
+          else
+            datatype = "Child"
+          "Group: #{$scope.groupArray[$scope.poll.groupId]} <br/><br/> #{ datatype } Group Invited: #{ $scope.groupArray[$scope.poll.additionalData.group_id] }"
         else
           "Parent Group: #{$scope.groupArray[$scope.poll.groupId]}"
       else if $scope.poll.pollCategoryName == "Increase Voting Power" || $scope.poll.pollCategoryName == "Decrease Voting Power"
@@ -103,6 +111,16 @@ angular.module('loomioApp').directive 'pollCommonDetailsPanel', ->
             users = users+connector+value
             return         
           "Members: "+users
+      else if $scope.poll.pollCategoryName = "Modify Consensus Thresholds"
+        if $scope.poll.additionalData 
+          html_text = ''
+          angular.forEach $scope.poll.additionalData, (value,key) -> 
+            if key != "poll_category_id"
+              html_text+=key.split("_").join(" ").charAt(0).toUpperCase() + key.split("_").join(" ").slice(1)+" : "+$scope.setvalue(key,value)+"<br/>"
+          html_text="Category to be modified : "+$scope.setvalue("poll_category_id",$scope.poll.additionalData.poll_category_id)+"<br/>"+html_text
+          return html_text
+        else
+          ""
       else
         ""
 
@@ -119,6 +137,12 @@ angular.module('loomioApp').directive 'pollCommonDetailsPanel', ->
 
     $scope.showResubmission = -> $scope.poll.isProposal() && $scope.poll.resubmissionCount > 0
 
+    $scope.setvalue = (key,value) ->
+      if key == "poll_category_id"
+        $scope.category_att[value]
+      else
+        value
+
     if !$scope.poll.isProposal()
       $scope.actions.push
         name: 'edit_poll'
@@ -128,4 +152,6 @@ angular.module('loomioApp').directive 'pollCommonDetailsPanel', ->
 
     listenForTranslations($scope)
     listenForReactions($scope, $scope.poll)
+
+
   ]

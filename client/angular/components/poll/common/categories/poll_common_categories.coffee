@@ -7,6 +7,7 @@ angular.module('loomioApp').directive 'pollCommonCategories', ->
   controller: ['$scope', ($scope) ->
     $scope.category_array = []
     $scope.categroyDropDown = []
+   
     $scope.poll.votingpowertype = ''
     $scope.fetchRecords = ->
       Records.groups.getGroupCategories($scope.poll.groupId)
@@ -22,6 +23,7 @@ angular.module('loomioApp').directive 'pollCommonCategories', ->
 
 
     $scope.get_data = (field_data) ->
+      $scope.poll.additionalData = {}
       $scope.pollCategoryName = $scope.category_array[field_data]
       if $scope.pollCategoryName == 'Increase Voting Power'
         $scope.poll.votingpowertype = '1'

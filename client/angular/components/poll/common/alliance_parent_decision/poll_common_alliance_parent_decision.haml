@@ -1,0 +1,38 @@
+%md-input-container.md-block
+    %label{for: "group-field"} {{"Select Group"}}
+    %md-select.poll-common-form-fields__group#group-field{ng-model: "poll.additionalData.apd_data1.group_id",ng-required: "true",ng-change:"fetchRecords()"}
+        %md-option{ng-repeat : "group in parentAllianceGroupData", ng-value : "group.id"} {{ group.name }}
+    %validation_errors{subject: "poll", field: "pollGroup"}
+
+
+%md-input-container.md-block{ng-if: "firstcategory == true && categroyDropDown.length != 0 "}
+    %label{for: "category-field", translate: "poll_common_form.category"}
+    %md-select.poll-common-form-fields__category#category-field{ng-model: "poll.additionalData.apd_data1.poll_category_id", ng-required: "true",ng-change:"getParentGroupData2()"}
+      %md-option{ng-repeat: "category in categroyDropDown", ng-value: "category.id"}
+        {{category.name}}
+    %validation_errors{subject: "poll", field: "pollCategory"}
+
+%md-input-container.md-block{ng-if: "category_array[poll.additionalData.apd_data1.poll_category_id] == 'Alliance Parent Decision'"}
+    %label{for: "group-field"} {{"Select Group"}}
+    %md-select.poll-common-form-fields__group#group-field{ng-model: "poll.additionalData.apd_data2.group_id",ng-required: "true",ng-change:"fetchRecords1()"}
+        %md-option{ng-repeat : "group in secondParentGroupData", ng-value : "group.id"} {{ group.name }}
+    %validation_errors{subject: "poll", field: "SecondSpollGroup"}
+
+%md-input-container.md-block{ng-if: "secondCategoryDropDown.length != 0 && category_array[poll.additionalData.apd_data1.poll_category_id] == 'Alliance Parent Decision'"}
+    %label{for: "category-field", translate: "poll_common_form.category"}
+    %md-select.poll-common-form-fields__category#category-field{ng-model: "poll.additionalData.apd_data2.poll_category_id", ng-required: "true",ng-change: "selectedcategory()"}
+      %md-option{ng-repeat: "category in secondCategoryDropDown", ng-value: "category.id"}
+        {{category.name}}
+    %validation_errors{subject: "poll", field: "pollCategory"}
+
+%div{ng-if:"finalcategory != ''"}
+  %md-input-container.md-block{ng-if:"finalcategory == 'Forge Alliance'"}
+    %poll_common_forge_alliance.animated
+  %md-input-container.md-block{ng-if: "finalcategory == 'Increase Voting Power' || finalcategory == 'Decrease Voting Power'"}
+    %poll_common_voting_power.animated
+  %md-input-container.md-block{ng-if:"finalcategory == 'Exile Member'"}
+    %poll_common_exile_member.animated
+  %md-input-container.md-block{ng-if:"finalcategory == 'Invite Member'"}
+    %poll_common_invite_members.animated
+  %md-input-container.md-block{ng-if:"finalcategory == 'Modify Consensus Thresholds'"}
+    %poll_common_modify_consensus_thresholds.animated {group: "poll.group"}

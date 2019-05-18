@@ -25,10 +25,16 @@ module.exports = class GroupRecordsInterface extends BaseRecordsInterface
   fetchChildGroups: (groupId) ->
     @remote.get(groupId+'/group_members.json',{})
 
+  fetchMemberChildGroupPower: (groupId) ->
+    @remote.get(groupId+'/member_vote_powers.json',{})
+
   fetchExploreGroups: (query, options = {}) ->
     options['q'] = query
     @fetch
       params: options
+
+  fetchCategoryAttributes: (groupId) -> 
+    @remote.get(groupId+'.json')
 
   getExploreResultsCount: (query, options = {}) ->
     options['q'] = query
@@ -42,6 +48,9 @@ module.exports = class GroupRecordsInterface extends BaseRecordsInterface
 
   getInvitableGroups: (group) ->
     @remote.get "#{group}/invitable_groups.json"
+  
+  getInvitableParentGroups: (group) ->
+    @remote.get "#{group}/invitable_parent_groups.json"
 
   
 

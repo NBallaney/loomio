@@ -13,10 +13,17 @@ angular.module('loomioApp').directive 'membershipCard', ->
   replace: false
   controller: ['$scope', ($scope) ->
     $scope.vars = {}
+    $scope.powerMembers = [];
     $scope.show = ->
       return false if ($scope.recordCount() == 0 && $scope.pending)
       $scope.initialFetch() if $scope.canView()
       $scope.canView()
+
+    $scope.getChildGroupPower = ->
+      Records.groups.fetchMemberChildGroupPower($scope.group.id).then (member_powers) ->
+        angular.forEach member_powers.power_members, (value, key) ->
+          $scope.powerMembers[value.id] = value.vote_power
+          return
 
     $scope.plusUser = Records.users.build(avatarKind: 'mdi-plus')
     $scope.canView = ->
@@ -91,11 +98,15 @@ angular.module('loomioApp').directive 'membershipCard', ->
       return unless $scope.vars.fragment
       Records.memberships.fetchByNameFragment($scope.vars.fragment, $scope.group.key)
 
+    
+
     $scope.loader = new RecordLoader
       collection: 'memberships'
       params:
         per: 20
         pending: $scope.pending
         group_id: $scope.group.id
+
+    $scope.getChildGroupPower()
 
   ]

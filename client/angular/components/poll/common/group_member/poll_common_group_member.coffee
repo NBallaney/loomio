@@ -11,9 +11,12 @@ angular.module('loomioApp').directive 'pollCommonGroupMember', ->
   templateUrl: 'generated/components/poll/common/group_member/poll_common_group_member.html'
   controller: ['$scope', ($scope) ->
     $scope.fetchedMembers = false
-
+    if $scope.poll.additionalData.apd_data1
+      $scope.selectablegroupid = $scope.poll.main_group_id
+    else
+      $scope.selectablegroupid = $scope.poll.groupId
     $scope.fetchGroupMembers = ->
-      Records.groups.fetchChildGroups($scope.poll.groupId).then (members) ->
+      Records.groups.fetchChildGroups($scope.selectablegroupid).then (members) ->
         if members.status == 200
           $scope.recordGroupMembers = members.members
         else

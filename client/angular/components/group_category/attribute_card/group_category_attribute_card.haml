@@ -1,0 +1,17 @@
+.group_category_attribute_card.lmo-card
+  %h2.lmo-card-heading.lmo-truncate-text {{title}}
+  .poll-group-child-preview__body{ng-repeat: "category in category_attributes"}
+    .inline_img_div.sidebar__list-item-button.md-button
+      .md-subhead.lmo-truncate-text
+        %span.ng-binding {{category.name}}
+          .md-caption.lmo-grey-on-white.lmo-truncate-text
+            %span.ng-binding Active days {{category.active_days}}
+          .md-caption.lmo-grey-on-white.lmo-truncate-text
+            %span.ng-binding Pass percentage {{category.pass_percentage}}
+          .md-caption.lmo-grey-on-white.lmo-truncate-text
+            %span.ng-binding Stop percentage {{category.stop_percentage}}          
+          .md-caption.lmo-grey-on-white.lmo-truncate-text
+            %span.ng-binding Pass percentage drop {{category.pass_percentage_drop}}
+          .md-caption.lmo-grey-on-white.lmo-truncate-text
+            %span.ng-binding Resubmission active days {{category.resubmission_active_days}} 
+        .md-caption.lmo-grey-on-white.lmo-truncate-textpoll_common_collapsed

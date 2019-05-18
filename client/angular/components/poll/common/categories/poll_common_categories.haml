@@ -13,5 +13,9 @@
     %poll_common_exile_member.animated
   %md-input-container.md-block{ng-if:"pollCategoryName == 'Invite Member'"}
     %poll_common_invite_members.animated
+  %md-input-container.md-block{ng-if:"pollCategoryName == 'Modify Consensus Thresholds'"}
+    %poll_common_modify_consensus_thresholds.animated {group: "poll.group"}
+  %md-input-container.md-block{ng-if:"pollCategoryName == 'Alliance Parent Decision'"}
+    %poll_common_alliance_parent_decision.animated {poll: "poll"}
   
 

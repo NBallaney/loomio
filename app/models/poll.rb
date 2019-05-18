@@ -365,7 +365,7 @@ class Poll < ApplicationRecord
   	if self.alliance_parent_id.nil?
   	  data = self.additional_data
   	  new_data = {}
-  	  	debugger
+  	  	# debugger
   	  if data["apd_data2"].present?
   	  	new_data = data.delete('apd_data1').dup
   	  	new_data['apd_data1'] = data.delete('apd_data2').dup

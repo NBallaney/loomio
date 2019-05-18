@@ -1,0 +1,6 @@
+%section.alliance-group-vote-card.lmo-card.lmo-no-print{aria-labelledby: "alliance-group-vote-card-title", ng-if:"alliance_decision_votes.length"}
+  .lmo-md-actions
+  %h2#alliance-group-vote-card-title.alliance-group-vote-card__title.lmo-truncate.lmo-card-heading.lmo-flex__grow Alliance Decision Votes {{alliance_decision_votes.length}}
+  .alliance-group-vote-card__alliance-group-vote.lmo-flex.lmo-flex__center{ ng-repeat: "grouppower in alliance_decision_votes"}
+      %span> {{ grouppower.group_id }}            
+      .membership-card__last-seen.md-caption {{ grouppower.vote }}

@@ -3,6 +3,8 @@
     %img.md-avatar.lmo-box--tiny.sidebar__list-item-group-logo.ng-scope{ng-src: "{{imgUrl}}"}
     .md-subhead.lmo-truncate-text
       %span> {{poll.name}}
+      .md-caption.lmo-grey-on-white.lmo-truncate-text
+        %span> {{poll.power ? "Vote Power "+poll.power : ""}}
     .md-caption.lmo-grey-on-white.lmo-truncate-textpoll_common_collapsed
       %span>
     

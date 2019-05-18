@@ -13,6 +13,10 @@ angular.module('loomioApp').directive 'pollCommonExileMember', ->
     $scope.fetchedMembers = false
     $scope.fetchedGroups = false
     $scope.parentChildGroups = []
+    if $scope.poll.additionalData.apd_data1
+      $scope.selectablegroupid = $scope.poll.main_group_id
+    else
+      $scope.selectablegroupid = $scope.poll.groupId
     $scope.selected_template = (id) ->
       $scope.poll.additionalData = {}
       if typeof id == 'string'        
@@ -23,7 +27,7 @@ angular.module('loomioApp').directive 'pollCommonExileMember', ->
         $scope.poll.additionalData.member_type = "user"
 
     $scope.fetchGroupMembers = ->
-      Records.groups.fetchChildGroups($scope.poll.groupId).then (members) ->
+      Records.groups.fetchChildGroups($scope.selectablegroupid).then (members) ->
         if members.status == 200
           $scope.recordGroupMembers = members.members
         else
@@ -31,7 +35,7 @@ angular.module('loomioApp').directive 'pollCommonExileMember', ->
 
         if members.groups.length!=0  
             angular.forEach members.groups, (value,key) ->
-              if value.id!=$scope.poll.groupId
+              if value.id!=$scope.selectablegroupid
                 value.id = 'group'+value.id 
                 $scope.parentChildGroups.push(value)
         $scope.fetchedMembers = true

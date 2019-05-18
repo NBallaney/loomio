@@ -11,6 +11,8 @@ angular.module('loomioApp').directive 'subgroupsCard', ['$rootScope', ($rootScop
   controller: ['$scope', ($scope) ->
     $scope.show = ->
       $scope.group.isParent()
+    
+    # Records.groups.fetchMemberChildGroupPower($scope.group).then ->
 
     Records.groups.fetchByParent($scope.group).then ->
       EventBus.broadcast $rootScope, 'subgroupsLoaded', $scope.group
