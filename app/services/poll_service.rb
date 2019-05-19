@@ -105,7 +105,8 @@ class PollService
   # Check child poll votes(if any) to determine the poll status
   def self.check_child_poll_votes poll, agree_count, disagree_count, others_count
     #agree_count, disagree_count, others_count = 0, 0, 0
-    poll.alliance_decision_child_polls.each do |child_poll|
+    #poll.alliance_decision_child_polls.each do |child_poll|
+    poll.child_group_polls.each do |child_poll|
       if child_poll.closed?
         case child_poll.status
         when "Pass"

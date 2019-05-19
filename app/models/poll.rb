@@ -338,6 +338,23 @@ class Poll < ApplicationRecord
     end
   end
 
+  def child_group_polls
+    polls = []
+    if self.group.child_groups.any?
+      self.group.child_groups.each do |group|
+        poll_category = group.poll_categories.where(name: "Alliance Decision").first
+        poll_title = poll.title.gsub("Parent Group: ", "")
+        if( Poll.where(group_id: group.id, title: "Parent Group: #{poll_title}").any? ||  
+                Poll.where(group_id: group.id, title: poll_title).any?)
+          poll = Poll.where(group_id: group.id, title: "Parent Group: #{poll_title}")[0] ||  
+                Poll.where(group_id: group.id, title: poll_title)[0]
+          polls << poll
+        end
+      end
+    end
+    polls
+  end
+
   private
 
   # provides a base hash of 0's to merge with stance data
@@ -365,7 +382,7 @@ class Poll < ApplicationRecord
   	if self.alliance_parent_id.nil?
   	  data = self.additional_data
   	  new_data = {}
-  	  	# debugger
+      debugger
   	  if data["apd_data2"].present?
   	  	new_data = data.delete('apd_data1').dup
   	  	new_data['apd_data1'] = data.delete('apd_data2').dup
