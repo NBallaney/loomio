@@ -28,7 +28,7 @@ angular.module('loomioApp').directive 'pollCommonAllianceParentDecision', ->
     $scope.finalcategoryid = ''
     $scope.poll.main_group_id = ''
 
-    Records.groups.getInvitableParentGroups($scope.poll.groupId).then((res) ->          
+    Records.groups.fetchChildGroups($scope.poll.groupId).then((res) ->          
       for parentgroup in res.parent_groups
         $scope.parentAllianceGroupData.push {"id":parentgroup.id,"name":parentgroup.full_name}            
     )
@@ -66,7 +66,7 @@ angular.module('loomioApp').directive 'pollCommonAllianceParentDecision', ->
         $scope.finalcategoryid = ''
         $scope.secondParentGroupData = []
         if $scope.category_array[$scope.poll.additionalData.apd_data1.poll_category_id] =='Alliance Parent Decision'
-            Records.groups.getInvitableParentGroups($scope.poll.additionalData.apd_data1.group_id).then((res) ->          
+            Records.groups.fetchChildGroups($scope.poll.additionalData.apd_data1.group_id).then((res) ->          
                 for parentgroup in res.parent_groups
                     $scope.secondParentGroupData.push {"id":parentgroup.id,"name":parentgroup.full_name}            
                 )
