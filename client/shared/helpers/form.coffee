@@ -51,7 +51,7 @@ module.exports =
     , options))
 
   submitPoll: (scope, model, options = {}) ->
-    console.log model
+    //console.log model
     if model.poll.additionalData
       if model.poll.additionalData.apd_data1
         model.poll.groupId = model.poll.main_group_id
