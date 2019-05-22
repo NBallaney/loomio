@@ -47,6 +47,7 @@ angular.module('loomioApp').directive 'pollCommonDetailsPanel', ->
     $scope.memberArray = []
     $scope.category_att = []
     $scope.main_Cat= []
+    $scope.executed = false
     Records.groups.fetch().then((res) ->
       data = []
       for group in res.groups
@@ -127,12 +128,18 @@ angular.module('loomioApp').directive 'pollCommonDetailsPanel', ->
           ""
       else if $scope.poll.pollCategoryName == "Alliance Parent Decision"
         html_text="Source Group: #{$scope.groupArray[$scope.poll.groupId]} <br/> Parent Group 1: #{$scope.groupArray[$scope.poll.additionalData.group_id]}<br/>"
+        # return $scope.poll.additionalData;
         if $scope.poll.additionalData.apd_data2
-          $scope.getGroupCategories($scope.poll.additionalData.apd_data1.group_id)
-          html_text=html_text+"Parent Group 2: #{$scope.groupArray[$scope.poll.additionalData.apd_data1.group_id]}<br/>Category Selected: #{$scope.main_Cat[$scope.poll.additionalData.apd_data2.poll_category_id]}<br/>"
+          if !$scope.executed
+            $scope.getGroupCategories($scope.poll.additionalData.apd_data1.group_id)
+          
+          
+          html_text=html_text+"Parent Group 2: #{$scope.groupArray[$scope.poll.additionalData.apd_data1.group_id]}<br/>Category Selected: #{$scope.main_Cat[$scope.poll.additionalData.apd_data1.poll_category_id]}<br/>"
         else
-          $scope.getGroupCategories($scope.poll.additionalData.group_id)
-          html_text+="Category Selected: #{$scope.main_Cat[$scope.poll.additionalData.apd_data1.poll_category_id]}<br/>"
+          if !$scope.executed
+            $scope.getGroupCategories($scope.poll.additionalData.group_id)
+          
+          html_text+="Category Selected: #{$scope.main_Cat[$scope.poll.additionalData.poll_category_id]}<br/>"
         
         if $scope.poll.additionalData.apd_data2
           polldetails = $scope.poll.additionalData.apd_data2
@@ -142,64 +149,63 @@ angular.module('loomioApp').directive 'pollCommonDetailsPanel', ->
           pollcategoryname = $scope.main_Cat[$scope.poll.additionalData.poll_category_id]
 
         detail_text=''
-
+        # detail_text = ''
         # return pollcategoryname
 
-        # if pollcategoryname == "Alliance Decision"
-        #   # console.log($scope.poll)
-        #   "Parent Group: #{ $scope.groupArray[$scope.poll.parentGroupId] }"
-        # else if pollcategoryname == "Forge Alliance"
-        #   if $scope.poll.additionalData
-        #     if polldetails.parent == true
-        #       datatype = "Parent"
-        #     else
-        #       datatype = "Child"
-        #     detail_text+="Group: #{$scope.groupArray[$scope.poll.groupId]} <br/><br/> #{ datatype } Group Invited: #{ $scope.groupArray[polldetails.group_id] }"
-        #   else
-        #     detail_text+="Parent Group: #{$scope.groupArray[$scope.poll.groupId]}"
-        # else if pollcategoryname == "Increase Voting Power" || pollcategoryname == "Decrease Voting Power"
-        #   if $scope.poll.additionalData
-        #     return polldetails
-        #     if polldetails.member_type=="user"
-        #       detail_text+="Member: #{$scope.memberArray[polldetails.user_id]} <br/><br/>Vote Power: #{polldetails.vote_power}"
-        #     else
-        #       detail_text+="Group: #{$scope.groupArray[polldetails.group_id]} <br/><br/>Vote Power: #{polldetails.vote_power}"
-        # else if pollcategoryname == "Exile Member"
-        #   if $scope.poll.additionalData
-        #     # $scope.poll.additionalData.member_type
-        #     if polldetails.member_type=="user"
-        #       detail_text+="Member: #{$scope.memberArray[polldetails.user_id]}"
-        #     else
-        #       detail_text+="Group: #{$scope.groupArray[polldetails.group_id]}"
-        # else if pollcategoryname == "Invite Member"        
-        #   if $scope.poll.additionalData
-        #     users = ''
-        #     angular.forEach polldetails.user_ids, (value) ->
-        #       if users.trim() == ''
-        #         connector = ""
-        #       else
-        #         connector = ", "
-        #       users = users+connector+$scope.memberArray[value]  
-        #       return
-        #     angular.forEach polldetails.emails, (value) ->
-        #       if users.trim() == ''
-        #         connector = ""
-        #       else
-        #         connector = ", "
-        #       users = users+connector+value
-        #       return         
-        #     detail_text+="Members: "+users
-        # else if pollcategoryname == "Modify Consensus Thresholds"
-        #   if $scope.poll.additionalData 
-        #     html_text1 = ''
-        #     # return polldetails
-        #     angular.forEach polldetails, (value,key) -> 
-        #       if key != "poll_category_id"
-        #         html_text1+=key.split("_").join(" ").charAt(0).toUpperCase() + key.split("_").join(" ").slice(1)+" : "+$scope.setvalue(key,value)+"<br/>"
-        #     html_text1="Category to be modified : "+$scope.setvalue("poll_category_id",polldetails.poll_category_id)+"<br/>"+html_text
-        #     detail_text+=html_text1
-        #   else
-        #     ""
+        if pollcategoryname == "Alliance Decision"
+          # console.log($scope.poll)
+          "Parent Group: #{ $scope.groupArray[$scope.poll.parentGroupId] }"
+        else if pollcategoryname == "Forge Alliance"
+          if $scope.poll.additionalData
+            if polldetails.parent == true
+              datatype = "Parent"
+            else
+              datatype = "Child"
+            detail_text+="#{ datatype } Group Invited: #{ $scope.groupArray[polldetails.group_id] }"
+          else
+            detail_text+="Parent Group: #{$scope.groupArray[$scope.poll.groupId]}"
+        else if pollcategoryname == "Increase Voting Power" || pollcategoryname == "Decrease Voting Power"
+          if $scope.poll.additionalData
+            if polldetails.member_type=="user"
+              detail_text+="Member: #{$scope.memberArray[polldetails.user_id]} <br/><br/>Vote Power: #{polldetails.vote_power}"
+            else
+              detail_text+="Group: #{$scope.groupArray[polldetails.group_id]} <br/><br/>Vote Power: #{polldetails.vote_power}"
+        else if pollcategoryname == "Exile Member"
+          if $scope.poll.additionalData
+            # $scope.poll.additionalData.member_type
+            if polldetails.member_type=="user"
+              detail_text+="Member: #{$scope.memberArray[polldetails.user_id]}"
+            else
+              detail_text+="Group: #{$scope.groupArray[polldetails.group_id]}"
+        else if pollcategoryname == "Invite Member"        
+          if $scope.poll.additionalData
+            users = ''
+            angular.forEach polldetails.user_ids, (value) ->
+              if users.trim() == ''
+                connector = ""
+              else
+                connector = ", "
+              users = users+connector+$scope.memberArray[value]  
+              return
+            angular.forEach polldetails.emails, (value) ->
+              if users.trim() == ''
+                connector = ""
+              else
+                connector = ", "
+              users = users+connector+value
+              return         
+            detail_text+="Members: "+users
+        else if pollcategoryname == "Modify Consensus Thresholds"
+          if $scope.poll.additionalData 
+            html_text1 = ''
+            # return polldetails
+            angular.forEach polldetails, (value,key) -> 
+              if key != "poll_category_id"
+                html_text1+=key.split("_").join(" ").charAt(0).toUpperCase() + key.split("_").join(" ").slice(1)+" : "+$scope.setvalue(key,value)+"<br/>"
+            html_text1="Category to be modified : "+$scope.main_Cat[polldetails.poll_category_id]+"<br/>"+html_text1
+            detail_text+=html_text1
+          else
+            ""
           
 
 
@@ -217,10 +223,11 @@ angular.module('loomioApp').directive 'pollCommonDetailsPanel', ->
 
 
 
-        return html_text+'<br/>'+detail_text
+        return html_text+''+detail_text
       else
         ""
     $scope.getGroupCategories = (group) ->
+      $scope.executed = true
       Records.groups.fetchCategoryAttributes(group).then (attributes) ->
         angular.forEach attributes.poll_categories, (value,key) ->
           $scope.main_Cat[value.id] = value.name

@@ -18,7 +18,13 @@ angular.module('loomioApp').directive 'pollCommonExileMember', ->
     else
       $scope.selectablegroupid = $scope.poll.groupId
     $scope.selected_template = (id) ->
-      $scope.poll.additionalData = {}
+      if $scope.poll.additionalData.member_type
+        delete $scope.poll.additionalData.member_type
+      if $scope.poll.additionalData.group_id
+        delete $scope.poll.additionalData.group_id
+      if $scope.poll.additionalData.user_id
+        delete $scope.poll.additionalData.user_id
+        
       if typeof id == 'string'        
         $scope.poll.additionalData.group_id = parseInt(id.replace("group",""))
         $scope.poll.additionalData.member_type = "group"
