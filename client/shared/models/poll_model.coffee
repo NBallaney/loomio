@@ -100,7 +100,7 @@ module.exports = class PollModel extends BaseModel
   membersCount: ->
     # NB: this won't work for people who vote, then leave the group.
     @stancesCount + @undecidedCount
-
+  
   percentVoted: ->
     return 0 if @membersCount() == 0
     (100 * @stancesCount / (@membersCount())).toFixed(0)

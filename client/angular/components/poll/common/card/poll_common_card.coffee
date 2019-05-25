@@ -11,7 +11,7 @@ angular.module('loomioApp').directive 'pollCommonCard', ->
   replace: true
   controller: ['$scope', ($scope) ->
     Records.polls.findOrFetchById($scope.poll.key)
-
+    console.log $scope.poll
     $scope.buttonPressed = false
     EventBus.listen $scope, 'showResults', ->
       $scope.buttonPressed = true

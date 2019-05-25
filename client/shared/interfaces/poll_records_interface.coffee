@@ -20,3 +20,6 @@ module.exports = class PollRecordsInterface extends BaseRecordsInterface
 
   fetchByGroup: (groupKey, options = {}) ->
     @search _.merge(options, {group_key: groupKey})
+
+  fetchById: (pollname) ->
+    @remote.get(pollname)
