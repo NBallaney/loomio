@@ -19,7 +19,8 @@ angular.module('loomioApp').directive 'pollCommonForgeAlliance', ->
       $scope.selectablegroupid = $scope.poll.main_group_id
     else
       $scope.selectablegroupid = $scope.poll.groupId
-
+    $scope.reset_value = ->
+      $scope.poll.additionalData.group_id = ''
     # parent_data = []
     # data = []
     Records.groups.getInvitableParentGroups($scope.selectablegroupid).then((res) ->          

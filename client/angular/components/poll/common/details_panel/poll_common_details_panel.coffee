@@ -82,22 +82,26 @@ angular.module('loomioApp').directive 'pollCommonDetailsPanel', ->
             datatype = "Parent"
           else
             datatype = "Child"
-          "Group: #{$scope.groupArray[$scope.poll.groupId]} <br/><br/> #{ datatype } Group Invited: #{ $scope.groupArray[$scope.poll.additionalData.group_id] }"
+          if $scope.groupArray[$scope.poll.groupId] == "undefined"
+            groupnamee = "Secret Group"
+          else
+            groupnamee = $scope.groupArray[$scope.poll.groupId]
+          "Group: #{$scope.groupArray[$scope.poll.groupId] == undefined && 'Secret Group' || $scope.groupArray[$scope.poll.groupId]} <br/><br/> #{ datatype } Group Invited: #{ $scope.groupArray[$scope.poll.additionalData.group_id]== undefined && "Secret Group" || $scope.groupArray[$scope.poll.additionalData.group_id] }"
         else
-          "Parent Group: #{$scope.groupArray[$scope.poll.groupId]}"
+          "Parent Group: #{$scope.groupArray[$scope.poll.groupId]==undefined && "Secret Group" || $scope.groupArray[$scope.poll.groupId]}"
       else if $scope.poll.pollCategoryName == "Increase Voting Power" || $scope.poll.pollCategoryName == "Decrease Voting Power"
         if $scope.poll.additionalData
           if $scope.poll.additionalData.member_type=="user"
             "Member: #{$scope.memberArray[$scope.poll.additionalData.user_id]} <br/><br/>Vote Power: #{$scope.poll.additionalData.vote_power}"
           else
-            "Group: #{$scope.groupArray[$scope.poll.additionalData.group_id]} <br/><br/>Vote Power: #{$scope.poll.additionalData.vote_power}"
+            "Group: #{$scope.groupArray[$scope.poll.additionalData.group_id]==undefined && "Secret Group" || $scope.groupArray[$scope.poll.additionalData.group_id]} <br/><br/>Vote Power: #{$scope.poll.additionalData.vote_power}"
       else if $scope.poll.pollCategoryName == "Exile Member"
         if $scope.poll.additionalData
           # $scope.poll.additionalData.member_type
           if $scope.poll.additionalData.member_type=="user"
             "Member: #{$scope.memberArray[$scope.poll.additionalData.user_id]}"
           else
-            "Group: #{$scope.groupArray[$scope.poll.additionalData.group_id]}"
+            "Group: #{$scope.groupArray[$scope.poll.additionalData.group_id]==undefined && "Secret Group" || $scope.groupArray[$scope.poll.additionalData.group_id]}"
       else if $scope.poll.pollCategoryName == "Invite Member"        
         if $scope.poll.additionalData
           users = ''
@@ -127,17 +131,17 @@ angular.module('loomioApp').directive 'pollCommonDetailsPanel', ->
         else
           ""
       else if $scope.poll.pollCategoryName == "Alliance Parent Decision"
-        html_text="Source Group: #{$scope.groupArray[$scope.poll.groupId]} <br/> Parent Group 1: #{$scope.groupArray[$scope.poll.additionalData.group_id]}<br/>"
+        html_text="Source Group: #{$scope.groupArray[$scope.poll.groupId]==undefined && "Secret Group" || $scope.groupArray[$scope.poll.groupId]} <br/> Parent Group 1: #{$scope.groupArray[$scope.poll.additionalData.group_id]==undefined && "Secret Group" || $scope.groupArray[$scope.poll.additionalData.group_id]}<br/>"
         # return $scope.poll.additionalData;
         if $scope.poll.additionalData.apd_data2
           if !$scope.executed
-            $scope.getGroupCategories($scope.poll.additionalData.apd_data1.group_id)
+            $scope.getGroupCategories($scope.groupArray[$scope.poll.additionalData.apd_data1.group_id]==undefined && "Secret Group" || $scope.groupArray[$scope.poll.additionalData.apd_data1.group_id])
           
           
-          html_text=html_text+"Parent Group 2: #{$scope.groupArray[$scope.poll.additionalData.apd_data1.group_id]}<br/>Category Selected: #{$scope.main_Cat[$scope.poll.additionalData.apd_data1.poll_category_id]}<br/>"
+          html_text=html_text+"Parent Group 2: #{$scope.groupArray[$scope.poll.additionalData.apd_data1.group_id]==undefined && "Secret Group" || $scope.groupArray[$scope.poll.additionalData.apd_data1.group_id]}<br/>Category Selected: #{$scope.main_Cat[$scope.poll.additionalData.apd_data1.poll_category_id]}<br/>"
         else
           if !$scope.executed
-            $scope.getGroupCategories($scope.poll.additionalData.group_id)
+            $scope.getGroupCategories($scope.groupArray[$scope.poll.additionalData.group_id]==undefined && "Secret Group" || $scope.groupArray[$scope.poll.additionalData.group_id])
           
           html_text+="Category Selected: #{$scope.main_Cat[$scope.poll.additionalData.poll_category_id]}<br/>"
         
@@ -154,29 +158,29 @@ angular.module('loomioApp').directive 'pollCommonDetailsPanel', ->
 
         if pollcategoryname == "Alliance Decision"
           # console.log($scope.poll)
-          "Parent Group: #{ $scope.groupArray[$scope.poll.parentGroupId] }"
+          "Parent Group: #{ $scope.groupArray[$scope.poll.parentGroupId]==undefined && "Secret Group" || $scope.groupArray[$scope.poll.parentGroupId] }"
         else if pollcategoryname == "Forge Alliance"
           if $scope.poll.additionalData
             if polldetails.parent == true
               datatype = "Parent"
             else
               datatype = "Child"
-            detail_text+="#{ datatype } Group Invited: #{ $scope.groupArray[polldetails.group_id] }"
+            detail_text+="#{ datatype } Group Invited: #{ $scope.groupArray[polldetails.group_id]==undefined && "Secret Group" || $scope.groupArray[polldetails.group_id] }"
           else
-            detail_text+="Parent Group: #{$scope.groupArray[$scope.poll.groupId]}"
+            detail_text+="Parent Group: #{$scope.groupArray[$scope.poll.groupId]==undefined && "Secret Group" || $scope.groupArray[$scope.poll.groupId]}"
         else if pollcategoryname == "Increase Voting Power" || pollcategoryname == "Decrease Voting Power"
           if $scope.poll.additionalData
             if polldetails.member_type=="user"
               detail_text+="Member: #{$scope.memberArray[polldetails.user_id]} <br/><br/>Vote Power: #{polldetails.vote_power}"
             else
-              detail_text+="Group: #{$scope.groupArray[polldetails.group_id]} <br/><br/>Vote Power: #{polldetails.vote_power}"
+              detail_text+="Group: #{$scope.groupArray[polldetails.group_id]==undefined && "Secret Group" || $scope.groupArray[polldetails.group_id]} <br/><br/>Vote Power: #{polldetails.vote_power}"
         else if pollcategoryname == "Exile Member"
           if $scope.poll.additionalData
             # $scope.poll.additionalData.member_type
             if polldetails.member_type=="user"
               detail_text+="Member: #{$scope.memberArray[polldetails.user_id]}"
             else
-              detail_text+="Group: #{$scope.groupArray[polldetails.group_id]}"
+              detail_text+="Group: #{$scope.groupArray[polldetails.group_id]==undefined && "Secret Group" || $scope.groupArray[polldetails.group_id]}"
         else if pollcategoryname == "Invite Member"        
           if $scope.poll.additionalData
             users = ''

@@ -1,12 +1,8 @@
 .poll-common-forge-alliance
     .md-block.poll-common-multiple-choice.poll-common-checkbox-option
         .poll-common-checkbox-option__text.md-list-item-text.lmo-flex--row
-            %h3 Parent Group
-            .help-bubble
-                %i.mdi.mdi-help-circle-outline
-                %md-tooltip.help-bubble__tooltip
-                    %span Check to invite parent groups else child groups will be invited
-        %md-checkbox{ng-model: "poll.additionalData.parent"}
+            %h3 Forge alliance as child group
+        %md-checkbox{ng-model: "poll.additionalData.parent", ng-change: "reset_value()"}
     %md-input-container.md-block{ng-if:"poll.additionalData.parent"}
         %label{for: "group-field"} {{"Select Group"}}
         %md-select.poll-common-form-fields__group#group-field{ng-model: "poll.additionalData.group_id",ng-required: "true",ng-change:"change_type(poll.additionalData.group_id)"}
