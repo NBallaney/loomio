@@ -11,6 +11,15 @@ angular.module('loomioApp').directive 'groupCategoryAttributeCard', ->
   replace: true
   controller: ['$scope', ($scope) ->
     $scope.title = "Category Attribute"
+    $scope.category_show = Array()
+    $scope.showfun = (category_name) ->
+      if !$scope.category_show[category_name]
+        $scope.category_show[category_name] = 1
+      else
+        $scope.category_show[category_name] = 0
+
     Records.groups.fetchCategoryAttributes($scope.group.id).then (attributes) ->
       $scope.category_attributes = attributes.poll_categories
+      for categoryy in attributes.poll_categories
+        $scope.category_show[categoryy.category_name] = 0
   ]

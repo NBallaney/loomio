@@ -210,7 +210,7 @@ module.exports = new class AbilityService
   canJoinGroup: (group) ->
     (group.membershipGrantedUpon == 'request') and
     @canViewGroup(group) and
-    !Session.user().isMemberOf(group)
+    !Session.user().isMemberOf(group) and @pollDatediffCheck(group,7)
 
   canRequestMembership: (group) ->
     (group.membershipGrantedUpon == 'approval') and
@@ -247,8 +247,14 @@ module.exports = new class AbilityService
   canAdministerPoll: (poll) ->
     _.contains(poll.adminMembers(), Session.user()) || Session.user().isAuthorOf(poll)
 
+  pollDatediffCheck: (group,days) ->
+    date2 = new Date();
+    date1 = new Date(group.createdAt);
+    timeDiff = Math.abs(date2.getTime() - date1.getTime())/ (1000 * 3600 * 24);
+    (timeDiff <= days)
+
   canClosePoll: (poll) ->
-    poll.isActive() and @canAdministerPoll(poll)
+    poll.isActive() and @canAdministerPoll(poll) and @pollDatediffCheck(poll.group(),7)
 
   canReopenPoll: (poll) ->
     if poll.isProposal()

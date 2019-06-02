@@ -138,12 +138,12 @@ angular.module('loomioApp').directive 'pollCommonDetailsPanel', ->
             $scope.getGroupCategories($scope.groupArray[$scope.poll.additionalData.apd_data1.group_id]==undefined && "Secret Group" || $scope.groupArray[$scope.poll.additionalData.apd_data1.group_id])
           
           
-          html_text=html_text+"Parent Group 2: #{$scope.groupArray[$scope.poll.additionalData.apd_data1.group_id]==undefined && "Secret Group" || $scope.groupArray[$scope.poll.additionalData.apd_data1.group_id]}<br/>Category Selected: #{$scope.main_Cat[$scope.poll.additionalData.apd_data1.poll_category_id]}<br/>"
+          html_text=html_text+"Parent Group 2: #{$scope.groupArray[$scope.poll.additionalData.apd_data1.group_id]==undefined && "Secret Group" || $scope.groupArray[$scope.poll.additionalData.apd_data1.group_id]}<br/>Category Selected: #{$scope.main_Cat[$scope.poll.additionalData.apd_data1.poll_category_id] == undefined && "General" || $scope.main_Cat[$scope.poll.additionalData.apd_data1.poll_category_id]}<br/>"
         else
           if !$scope.executed
             $scope.getGroupCategories($scope.groupArray[$scope.poll.additionalData.group_id]==undefined && "Secret Group" || $scope.groupArray[$scope.poll.additionalData.group_id])
           
-          html_text+="Category Selected: #{$scope.main_Cat[$scope.poll.additionalData.poll_category_id]}<br/>"
+          html_text+="Category Selected: #{$scope.main_Cat[$scope.poll.additionalData.poll_category_id] == undefined && "General" || $scope.main_Cat[$scope.poll.additionalData.poll_category_id]}<br/>"
         
         if $scope.poll.additionalData.apd_data2
           polldetails = $scope.poll.additionalData.apd_data2
@@ -210,7 +210,8 @@ angular.module('loomioApp').directive 'pollCommonDetailsPanel', ->
             detail_text+=html_text1
           else
             ""
-          
+        # else if  pollcategoryname == "General"
+          # detail_text+= "CateGeneral"
 
 
 

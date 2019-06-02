@@ -1,17 +1,20 @@
 .group_category_attribute_card.lmo-card
   %h2.lmo-card-heading.lmo-truncate-text {{title}}
-  .poll-group-child-preview__body{ng-repeat: "category in category_attributes"}
+  .poll-group-child-preview__body{ng-repeat: "category in category_attributes", ng-click: "showfun(category.name)"}
     .inline_img_div.sidebar__list-item-button.md-button
       .md-subhead.lmo-truncate-text
         %span.ng-binding {{category.name}}
-          .md-caption.lmo-grey-on-white.lmo-truncate-text
-            %span.ng-binding Active days {{category.active_days}}
-          .md-caption.lmo-grey-on-white.lmo-truncate-text
-            %span.ng-binding Pass percentage {{category.pass_percentage}}
-          .md-caption.lmo-grey-on-white.lmo-truncate-text
-            %span.ng-binding Stop percentage {{category.stop_percentage}}          
-          .md-caption.lmo-grey-on-white.lmo-truncate-text
-            %span.ng-binding Pass percentage drop {{category.pass_percentage_drop}}
-          .md-caption.lmo-grey-on-white.lmo-truncate-text
-            %span.ng-binding Resubmission active days {{category.resubmission_active_days}} 
+          %i.mdi.mdi-menu-up{ style: "font-size: 20px; position: absolute; right: 0px",ng-show: "category_show[category.name]"}
+          %i.mdi.mdi-menu-down{ style: "font-size: 20px; position: absolute; right: 0px",ng-hide: "category_show[category.name]"}
+          %div{ng-show: "category_show[category.name]"}
+            .md-caption.lmo-grey-on-white.lmo-truncate-text
+              %span.ng-binding Active days {{category.active_days}}
+            .md-caption.lmo-grey-on-white.lmo-truncate-text
+              %span.ng-binding Pass percentage {{category.pass_percentage}}
+            .md-caption.lmo-grey-on-white.lmo-truncate-text
+              %span.ng-binding Stop percentage {{category.stop_percentage}}          
+            .md-caption.lmo-grey-on-white.lmo-truncate-text
+              %span.ng-binding Pass percentage drop {{category.pass_percentage_drop}}
+            .md-caption.lmo-grey-on-white.lmo-truncate-text
+              %span.ng-binding Resubmission active days {{category.resubmission_active_days}} 
         .md-caption.lmo-grey-on-white.lmo-truncate-textpoll_common_collapsed
