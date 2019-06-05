@@ -15,6 +15,7 @@ angular.module('loomioApp').directive 'pollCommonModifyConsensusThresholds', ->
     $scope.poll = $scope.$parent.poll
     $scope.excluded_keys = ["id","name","created_at","updated_at","$$hashKey"]
     $scope.category_array = []
+    $scope.category_list = []
     $scope.category_selected = false
 #     $scope.attribute_list = []
 #     $scope.selected_attr = ""
@@ -32,13 +33,19 @@ angular.module('loomioApp').directive 'pollCommonModifyConsensusThresholds', ->
 #     $scope.current_category_attribute = {};
     Records.groups.fetchCategoryAttributes($scope.selectablegroupid).then (attributes) ->
       $scope.category_attributes = attributes.poll_categories
+      $scope.category_attributes.splice 0,0,{"id": "all","name": "All"}
+      # console.log $scope.category_attributes
       angular.forEach $scope.category_attributes , (value,index) ->
+            $scope.category_list[value.name] = value.id
             $scope.category_array.push(value.id)
 
       $scope.selectCategory = (category) ->
+            if category == 'all'
+                  if $scope.category_list["General"] 
+                        category = $scope.category_list["General"]
+
             $scope.current_category_attribute = $scope.category_attributes[$scope.category_array.indexOf(category)]
             $scope.category_selected = true
-            # $scope.attribute_list = []
             angular.forEach $scope.current_category_attribute, (value,index) -> 
                   if $scope.excluded_keys.indexOf(index) < 0
                        $scope.poll.additionalData[index] = value 

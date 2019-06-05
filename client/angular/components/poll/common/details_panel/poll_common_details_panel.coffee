@@ -47,6 +47,8 @@ angular.module('loomioApp').directive 'pollCommonDetailsPanel', ->
     $scope.memberArray = []
     $scope.category_att = []
     $scope.main_Cat= []
+    $scope.main_Cat1 = []
+    $scope.main_Cat2 = []
     $scope.executed = false
     Records.groups.fetch().then((res) ->
       data = []
@@ -57,6 +59,23 @@ angular.module('loomioApp').directive 'pollCommonDetailsPanel', ->
     Records.groups.fetchCategoryAttributes($scope.poll.groupId).then (attributes) ->
       angular.forEach attributes.poll_categories, (value,key) ->
         $scope.category_att[value.id] = value.name
+        $scope.main_Cat[value.id] = value.name
+    
+    if $scope.poll.additionalData.apd_data2
+      Records.groups.fetchCategoryAttributes($scope.poll.additionalData.apd_data2.group_id).then (attributes) ->
+        angular.forEach attributes.poll_categories, (value,key) ->
+          $scope.main_Cat2[value.id] = value.name
+
+      Records.groups.fetchCategoryAttributes($scope.poll.additionalData.apd_data1.group_id).then (attributes) ->
+        angular.forEach attributes.poll_categories, (value,key) ->
+          $scope.main_Cat1[value.id] = value.name
+    else
+      if $scope.poll.additionalData.apd_data1
+        Records.groups.fetchCategoryAttributes($scope.poll.additionalData.apd_data1.group_id).then (attributes) ->
+        angular.forEach attributes.poll_categories, (value,key) ->
+          $scope.main_Cat1[value.id] = value.name
+    
+
 
     Records.groups.fetchChildGroups($scope.poll.groupId).then (members) ->
       if members.status == 200
@@ -126,7 +145,7 @@ angular.module('loomioApp').directive 'pollCommonDetailsPanel', ->
           angular.forEach $scope.poll.additionalData, (value,key) -> 
             if key != "poll_category_id"
               html_text+=key.split("_").join(" ").charAt(0).toUpperCase() + key.split("_").join(" ").slice(1)+" : "+$scope.setvalue(key,value)+"<br/>"
-          html_text="Category to be modified : "+$scope.setvalue("poll_category_id",$scope.poll.additionalData.poll_category_id)+"<br/>"+html_text
+          html_text="Category to be modified : "+($scope.setvalue("poll_category_id",$scope.poll.additionalData.poll_category_id)!=undefined && $scope.setvalue("poll_category_id",$scope.poll.additionalData.poll_category_id) || "All")+"<br/>"+html_text
           return html_text
         else
           ""
@@ -138,24 +157,26 @@ angular.module('loomioApp').directive 'pollCommonDetailsPanel', ->
             $scope.getGroupCategories($scope.groupArray[$scope.poll.additionalData.apd_data1.group_id]==undefined && "Secret Group" || $scope.groupArray[$scope.poll.additionalData.apd_data1.group_id])
           
           
-          html_text=html_text+"Parent Group 2: #{$scope.groupArray[$scope.poll.additionalData.apd_data1.group_id]==undefined && "Secret Group" || $scope.groupArray[$scope.poll.additionalData.apd_data1.group_id]}<br/>Category Selected: #{$scope.main_Cat[$scope.poll.additionalData.apd_data1.poll_category_id] == undefined && "General" || $scope.main_Cat[$scope.poll.additionalData.apd_data1.poll_category_id]}<br/>"
+          html_text=html_text+"Parent Group 2: #{$scope.groupArray[$scope.poll.additionalData.apd_data1.group_id]==undefined && "Secret Group" || $scope.groupArray[$scope.poll.additionalData.apd_data1.group_id]}<br/>Category Selected: #{$scope.main_Cat1[$scope.poll.additionalData.apd_data1.poll_category_id] == undefined && ($scope.poll.additionalData.apd_data1.poll_category_id != "all" && "General" || "All") || $scope.main_Cat1[$scope.poll.additionalData.apd_data1.poll_category_id]}<br/>"
         else
           if !$scope.executed
             $scope.getGroupCategories($scope.groupArray[$scope.poll.additionalData.group_id]==undefined && "Secret Group" || $scope.groupArray[$scope.poll.additionalData.group_id])
           
-          html_text+="Category Selected: #{$scope.main_Cat[$scope.poll.additionalData.poll_category_id] == undefined && "General" || $scope.main_Cat[$scope.poll.additionalData.poll_category_id]}<br/>"
+          html_text+="Category Selected: #{$scope.main_Cat[$scope.poll.additionalData.poll_category_id] ==  undefined && ($scope.poll.additionalData.poll_category_id=="all" && "All"|| "General") || $scope.main_Cat[$scope.poll.additionalData.poll_category_id]}<br/>"
         
         if $scope.poll.additionalData.apd_data2
           polldetails = $scope.poll.additionalData.apd_data2
-          pollcategoryname = $scope.main_Cat[$scope.poll.additionalData.apd_data1.poll_category_id]
+          # console.log "Poll Category Name -> "+$scope.poll.additionalData.apd_data1.poll_category_id
+          pollcategoryname = $scope.main_Cat1[$scope.poll.additionalData.apd_data1.poll_category_id]
         else
           polldetails = $scope.poll.additionalData.apd_data1
+          # console.log "Poll Category Name -> "+$scope.poll.additionalData.poll_category_id
           pollcategoryname = $scope.main_Cat[$scope.poll.additionalData.poll_category_id]
 
         detail_text=''
         # detail_text = ''
         # return pollcategoryname
-
+        # console.log "Poll Category Name Is -> "+pollcategoryname
         if pollcategoryname == "Alliance Decision"
           # console.log($scope.poll)
           "Parent Group: #{ $scope.groupArray[$scope.poll.parentGroupId]==undefined && "Secret Group" || $scope.groupArray[$scope.poll.parentGroupId] }"
@@ -202,11 +223,12 @@ angular.module('loomioApp').directive 'pollCommonDetailsPanel', ->
         else if pollcategoryname == "Modify Consensus Thresholds"
           if $scope.poll.additionalData 
             html_text1 = ''
+            # console.log polldetails
             # return polldetails
             angular.forEach polldetails, (value,key) -> 
               if key != "poll_category_id"
                 html_text1+=key.split("_").join(" ").charAt(0).toUpperCase() + key.split("_").join(" ").slice(1)+" : "+$scope.setvalue(key,value)+"<br/>"
-            html_text1="Category to be modified : "+$scope.main_Cat[polldetails.poll_category_id]+"<br/>"+html_text1
+            html_text1="Category to be modified : "+($scope.main_Cat[polldetails.poll_category_id]!=undefined && $scope.main_Cat[polldetails.poll_category_id] || "All")+"<br/>"+html_text1
             detail_text+=html_text1
           else
             ""
