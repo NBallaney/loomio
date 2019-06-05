@@ -210,12 +210,12 @@ module.exports = new class AbilityService
   canJoinGroup: (group) ->
     (group.membershipGrantedUpon == 'request') and
     @canViewGroup(group) and
-    !Session.user().isMemberOf(group) and @pollDatediffCheck(group,7)
+    !Session.user().isMemberOf(group) and @pollDatediffCheck(group,0)
 
   canRequestMembership: (group) ->
     (group.membershipGrantedUpon == 'approval') and
     @canViewGroup(group) and
-    !Session.user().isMemberOf(group)
+    !Session.user().isMemberOf(group) and @pollDatediffCheck(group,7)
 
   canTranslate: (model) ->
     AppConfig.inlineTranslation.isAvailable? and
