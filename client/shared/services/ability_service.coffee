@@ -210,7 +210,7 @@ module.exports = new class AbilityService
   canJoinGroup: (group) ->
     (group.membershipGrantedUpon == 'request') and
     @canViewGroup(group) and
-    !Session.user().isMemberOf(group) and @pollDatediffCheck(group,0)
+    !Session.user().isMemberOf(group)
 
   canRequestMembership: (group) ->
     (group.membershipGrantedUpon == 'approval') and
