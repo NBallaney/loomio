@@ -212,9 +212,15 @@ class PollService
     when "Modify Consensus Thresholds"
       if poll.status == "Pass" && poll.majority =="yes"
         data = poll.additional_data
-        poll_category = poll.group.poll_categories.find_by(id: data["poll_category_id"])
-        poll_category.attributes = data.slice("active_days","pass_percentage", "stop_percentage", "pass_percentage_drop", "resubmission_active_days") if poll_category
-        poll_category.save
+        if data["poll_category_id"] == "all"
+          poll_categories = poll.group.poll_categories
+          attributes = data.slice("active_days","pass_percentage", "stop_percentage", "pass_percentage_drop", "resubmission_active_days") if poll_categories
+          poll_categories.update_all(attributes)
+        else
+          poll_category = poll.group.poll_categories.find_by(id: data["poll_category_id"])
+          poll_category.attributes = data.slice("active_days","pass_percentage", "stop_percentage", "pass_percentage_drop", "resubmission_active_days") if poll_category
+          poll_category.save
+        end
       end
     when "Alliance Parent Decision"
       if poll.status == "Pass" && poll.majority =="yes"

@@ -68,6 +68,7 @@ Loomio::Application.routes.draw do
         get :invitable_parent_groups
         get :group_members
         get :member_vote_powers
+        get :general_category
       end
       get :count_explore_results, on: :collection
     end

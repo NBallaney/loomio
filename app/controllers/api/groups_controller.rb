@@ -12,6 +12,15 @@ class API::GroupsController < API::RestfulController
     respond_with_resource
   end
 
+  #Fetch general category attributes
+  def general_category
+    self.resource = load_and_authorize(:formal_group)
+    category = resource.poll_categories.where(name: "General").first
+    respond_to do |f|
+      f.json {render json: {:category => category, :status => 200}.as_json}
+    end
+  end
+
   def invitable_groups
     self.resource = load_and_authorize(:formal_group)
     ids = resource.child_groups.pluck(:id) << resource.id
