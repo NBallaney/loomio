@@ -57,23 +57,29 @@ angular.module('loomioApp').directive 'pollCommonDetailsPanel', ->
     )
 
     Records.groups.fetchCategoryAttributes($scope.poll.groupId).then (attributes) ->
+      # console.log "hii"
+      # console.log attributes
       angular.forEach attributes.poll_categories, (value,key) ->
         $scope.category_att[value.id] = value.name
         $scope.main_Cat[value.id] = value.name
     
     if $scope.poll.additionalData.apd_data2
       Records.groups.fetchCategoryAttributes($scope.poll.additionalData.apd_data2.group_id).then (attributes) ->
+        # console.log "hii"
+        # console.log attributes
         angular.forEach attributes.poll_categories, (value,key) ->
           $scope.main_Cat2[value.id] = value.name
 
       Records.groups.fetchCategoryAttributes($scope.poll.additionalData.apd_data1.group_id).then (attributes) ->
+        # console.log "hii"
+        # console.log attributes
         angular.forEach attributes.poll_categories, (value,key) ->
           $scope.main_Cat1[value.id] = value.name
     else
       if $scope.poll.additionalData.apd_data1
         Records.groups.fetchCategoryAttributes($scope.poll.additionalData.apd_data1.group_id).then (attributes) ->
-        angular.forEach attributes.poll_categories, (value,key) ->
-          $scope.main_Cat1[value.id] = value.name
+          angular.forEach attributes.poll_categories, (value,key) ->
+            $scope.main_Cat1[value.id] = value.name
     
 
 
@@ -256,6 +262,8 @@ angular.module('loomioApp').directive 'pollCommonDetailsPanel', ->
     $scope.getGroupCategories = (group) ->
       $scope.executed = true
       Records.groups.fetchCategoryAttributes(group).then (attributes) ->
+        console.log "hiiiiii"
+        console.log attributes
         angular.forEach attributes.poll_categories, (value,key) ->
           $scope.main_Cat[value.id] = value.name
 
