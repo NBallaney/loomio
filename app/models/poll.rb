@@ -267,7 +267,7 @@ class Poll < ApplicationRecord
     agree_count, disagree_count, others_count = 0, 0, 0
     power_users_data, agree_votes_data, disagree_votes_data, others_votes_data = {}, {}, {}, {}
     group.power_users.map{|pu| power_users_data[pu.user_id] = pu.vote_power }
-    users_ids = User.joins(:delegate_users).where("delegate_users.poll_category_id = ?", 1).pluck(:id).uniq
+    users_ids = User.joins(:delegate_users).where("delegate_users.poll_category_id = ?", poll_category_id).pluck(:id).uniq
     stances.latest.each do |stance|
       users_ids.delete(stance.participant_id)
       if power_users_data.keys.include? stance.participant_id
@@ -315,7 +315,7 @@ class Poll < ApplicationRecord
         elsif disagree_votes_data[user.delegate_id].present?
           disagree_count += disagree_votes_data[user.delegate_id]
         elsif others_votes_data[user.delegate_id].present?
-          others_count += disagree_votes_data[user.delegate_id]
+          others_count += others_votes_data[user.delegate_id]
         else
           agree_count, disagree_count, others_count = check_delegates_vote user.delegate_id, agree_votes_data, disagree_votes_data, others_votes_data, agree_count, disagree_count, others_count, false
         end
@@ -353,6 +353,89 @@ class Poll < ApplicationRecord
       end
     end
     polls
+  end
+
+  # Delegates votes to show on poll
+  def delegates_votes
+    @agree_count, @disagree_count, @others_count = 0, 0, 0
+    @delegates_votes, @agree_votes_data, @disagree_votes_data, @others_votes_data = [], {}, {}, {}
+    #group.power_users.map{|pu| power_users_data[pu.user_id] = pu.vote_power }
+    @users_ids = User.joins(:delegate_users).where("delegate_users.poll_category_id = ?", poll_category_id).pluck(:id).uniq
+    if group.try(:power_users).present?
+      votes_data
+      @users_ids.each do |user_id|
+        delegate_vote user_id, true
+      end
+    end
+    @delegates_votes
+  end
+
+  def votes_data
+    power_users_data = {}
+    group.power_users.map{|pu| power_users_data[pu.user_id] = pu.vote_power }
+    stances.latest.each do |stance|
+      @users_ids.delete(stance.participant_id)
+      power_user = power_users_data.keys.include? stance.participant_id
+      #if power_users_data.keys.include? stance.participant_id
+        if stance.poll_options.first.name == "agree"
+          @agree_count += power_user ? power_users_data[stance.participant_id] : 1
+          @agree_votes_data[stance.participant_id] = power_user ? power_users_data[stance.participant_id] : 1
+        elsif stance.poll_options.first.name == "disagree"
+          @disagree_count += power_user ? power_users_data[stance.participant_id] : 1
+          @disagree_votes_data[stance.participant_id] = power_user ? power_users_data[stance.participant_id] : 1
+        else
+          @others_count += power_user ? power_users_data[stance.participant_id] : 1
+          @others_votes_data[stance.participant_id] = power_user ? power_users_data[stance.participant_id] : 1
+        end
+      # else
+      #   if stance.poll_options.first.name == "agree"
+      #     @agree_count += 1
+      #     @agree_votes_data[stance.participant_id] = 1
+      #   elsif stance.poll_options.first.name == "disagree"
+      #     @disagree_count += 1
+      #     @disagree_votes_data[stance.participant_id] = 1
+      #   else
+      #     @others_count += 1
+      #     @others_votes_data[stance.participant_id] = 1
+      #   end
+      # end
+    end
+  end
+
+  def delegate_vote user_id, parent_user, agree_count=0, disagree_count=0, others_count=0
+    
+    if parent_user
+      @traversed_ids = []
+    end
+    if !@traversed_ids.include?(user_id)
+      @traversed_ids <<  user_id
+      users = User.find(user_id).delegate_users.where(poll_category_id: poll_category_id  )
+      users.each do |user|
+        if @agree_votes_data[user.delegate_id].present?
+          agree_count += @agree_votes_data[user.delegate_id]
+        elsif @disagree_votes_data[user.delegate_id].present?
+          disagree_count += @disagree_votes_data[user.delegate_id]
+        elsif @others_votes_data[user.delegate_id].present?
+          others_count += @others_votes_data[user.delegate_id]
+        else
+          agree_count, disagree_count, others_count = delegate_vote user.delegate_id, false, agree_count, disagree_count, others_count
+        end
+      end
+    end
+    if parent_user
+      max = [agree_count, disagree_count, others_count].max
+      if [agree_count, disagree_count, max].uniq.length == 1
+        #Do nothing
+      elsif agree_count==max 
+        @delegates_votes << {user_id: user_id, vote: "agree"}
+      elsif disagree_count==max 
+        @delegates_votes << {user_id: user_id, vote: "disagree"}
+      else 
+        @delegates_votes << {user_id: user_id, vote: "abstain"}
+      end
+    else
+      return agree_count, disagree_count, others_count
+    end
   end
 
   private

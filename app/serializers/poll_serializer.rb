@@ -7,7 +7,8 @@ class PollSerializer < ActiveModel::Serializer
              :notify_on_participate, :subscribed, :example, :anonymous, :pass_percentage, :stop_percentage,
              :resubmission_active_days, :pass_percentage_drop, :resubmission_count, :poll_category_id,
              :poll_category_name, :status, :parent_id, :can_respond_maybe, :parents_names,
-             :alliance_parent_id, :additional_data, :parent_group_id, :alliance_decision_votes
+             :alliance_parent_id, :additional_data, :parent_group_id, :alliance_decision_votes,
+             :delegates_votes
 
 
   has_one :author, serializer: UserSerializer, root: :users
@@ -86,5 +87,9 @@ class PollSerializer < ActiveModel::Serializer
       data["user_ids"] = JSON.parse(data["user_ids"]) if( data["user_ids"] and data["user_ids"].class == String) rescue nil
     end
     data
+  end
+
+  def delegates_votes
+    object.delegates_votes
   end
 end
