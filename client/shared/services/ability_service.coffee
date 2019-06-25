@@ -254,7 +254,7 @@ module.exports = new class AbilityService
     (timeDiff <= days)
 
   canClosePoll: (poll) ->
-    poll.isActive() and @canAdministerPoll(poll) and @pollDatediffCheck(poll.group(),7)
+    poll.isActive() and @canAdministerPoll(poll)
 
   canReopenPoll: (poll) ->
     if poll.isProposal()

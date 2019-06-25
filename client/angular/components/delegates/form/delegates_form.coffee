@@ -36,9 +36,12 @@ angular.module('loomioApp').directive 'delegatesForm', ->
     $scope.all_members = []
 
     Records.groups.fetchChildGroups(getCookie('groupId')).then (members) ->
+      # console.log members.members
       if members.status == 200
         $scope.recordGroupMembers = members.members
-        members.members.each (value) ->
+        for value in $scope.recordGroupMembers
+        # .each (value) ->
+          # console.log value
           $scope.all_members.push(value.email)
           return
       else
@@ -46,8 +49,11 @@ angular.module('loomioApp').directive 'delegatesForm', ->
    
 
     $scope.search = (query) ->
+      # console.log user
       if query != ''
+      #  && searchUser.id != user.id
         users = $scope.recordGroupMembers.filter((searchUser) => searchUser.email.toLowerCase().indexOf(query.toLowerCase()) > -1 && searchUser.id != user.id )
+        # console.log users
         utils.parseJSONList(users)
 
 

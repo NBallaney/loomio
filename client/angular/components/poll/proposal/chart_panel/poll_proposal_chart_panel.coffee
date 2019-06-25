@@ -11,16 +11,33 @@ angular.module('loomioApp').directive 'pollProposalChartPanel', ->
     $scope.stanceCounts = []
     $scope.pollOptionNames = ['agree', 'abstain', 'disagree', 'block']
     if !$scope.run
-      Records.polls.fetchById($scope.poll.key).then((res) -> 
-          if res.polls[0].alliance_decision_votes 
+      Records.polls.fetchById($scope.poll.key).then((res) ->
+          # res.polls[0].delegates_votes = [{
+          #     "user_id": 3,
+          #     "vote": "agree"
+          #   }, {
+          #     "user_id": 5,
+          #     "vote": "agree"
+          #   }]
+          if res.polls[0].alliance_decision_votes
+            # console.log res.polls[0].alliance_decision_votes 
             angular.forEach res.polls[0].alliance_decision_votes, (value, key) ->
               indexget = $scope.pollOptionNames.indexOf(value.vote)
               $scope.poll.stanceCounts[indexget] +=1
               $scope.alliancedecsionvotes[indexget] =  $scope.alliancedecsionvotes[indexget]+1
               $scope.allianceVoteCount+=1
+          if res.polls[0].delegates_votes
+            # console.log res.polls[0].delegates_votes
+            angular.forEach res.polls[0].delegates_votes, (value, key) ->
+              indexget = $scope.pollOptionNames.indexOf(value.vote)
+              $scope.poll.stanceCounts[indexget] +=1
+              $scope.alliancedecsionvotes[indexget] =  $scope.alliancedecsionvotes[indexget]+1
+              $scope.allianceVoteCount+=1
+          # console.log $scope.alliancedecsionvotes
           $scope.countstance =$scope.poll.stanceCounts 
           $scope.run = true          
       )
+      
 
     $scope.countFor = (name) ->
       ($scope.poll.stanceData[name] or 0)+$scope.alliancedecsionvotes[$scope.pollOptionNames.indexOf(name)]
