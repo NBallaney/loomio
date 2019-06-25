@@ -2,10 +2,17 @@
   %md-autocomplete{md-search-text: "query", md-autoselect: "true", md-autofocus: "true", md-selected-item-change: "addRecipient(recipient)", md-item-text: "recipient.email", placeholder: "Members", md-items: "recipient in search(query)", md-min-length: "3", md-delay: "150"}
     %md-item-template
       %delegates_chip{user: "recipient"}
+      -# .delegates-chip.lmo-md-actions{data-id: "{{recipient.id}}"}
+      -#   .delegates-chip__content.lmo-flex--row.lmo-flex__center
+      -#     %user_avatar.lmo-margin-right{user: "recipient", size: "small", no-link: "true"}
+      -#     %span.md-body-2 {{ recipient.name || recipient.email }}
+      -#   .delegates-chip__action
+      -#     %md-button.md-button--tiny{ng-if: "showClose", ng-click: "removeRecipient(recipient)"}
+      -#       %i.mdi.mdi-24px.mdi-window-close
 
 %md-list.pollCommonInviteMember
   %md-list-item{ng-repeat: "item in poll.additionalData.user_ids", ng-if:"poll.additionalData.user_ids.length !=0",style:"border: 1px solid rgba(0,0,0,0.1);margin-top:2px"}
-    .md-list-item-text{style:"display: inline-table;width:100%"}
+    .md-list-item-text{style:"display: inline-table;width:100%;color:black"}
       %h3 {{user_idsArray[item]}}
         %i.mdi.mdi-20px.mdi-window-close{style:"float:right;cursor:pointer",ng-click:"member_rem(item)"} 
   %md-list-item{ng-repeat:"item in poll.additionalData.emails", ng-if:"poll.additionalData.emails.length !=0",style:"border: 1px solid rgba(0,0,0,0.1);margin-top:2px"}

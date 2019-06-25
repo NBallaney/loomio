@@ -36,7 +36,7 @@ angular.module('loomioApp').directive 'pollCommonInviteMembers', ->
           users.push(tempdata)
       else
         users = $scope.arr_diff(users,$scope.poll.additionalData.user_ids)
-
+      # console.log users
       $scope.users = users
 
     $scope.arr_diff =  (a1, a2) -> 

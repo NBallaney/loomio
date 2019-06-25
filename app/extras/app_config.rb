@@ -46,7 +46,8 @@ class AppConfig
       icon144_src:                       ENV.fetch('THEME_ICON144_SRC',             '/theme/icon144.png'),
       icon192_src:                       ENV.fetch('THEME_ICON192_SRC',             '/theme/icon192.png'),
       icon512_src:                       ENV.fetch('THEME_ICON512_SRC',             '/theme/icon512.png'),
-      app_logo_src:                      ENV.fetch('THEME_APP_LOGO_SRC',            '/theme/logo.svg'),
+      # app_logo_src:                      ENV.fetch('THEME_APP_LOGO_SRC',            '/theme/logo.svg'),
+      app_logo_src:                      ENV.fetch('THEME_APP_LOGO_SRC',            '/theme/index.jpeg'),
       default_group_cover_src:           ENV.fetch('THEME_DEFAULT_GROUP_COVER_SRC', '/theme/default_group_cover.png'),
 
       # used in emails
