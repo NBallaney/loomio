@@ -28,7 +28,7 @@
     flex-grow: 1;
     height: 100%;
     a, img { height: 100%; }
-    img { padding: 8px; }
+    img { padding: 0px; }
   }
 
   .navbar__left {
@@ -54,3 +54,5 @@
     .navbar__right { flex-grow: 1; }
   }
 }
+
+
