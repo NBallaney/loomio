@@ -189,8 +189,8 @@ class PollService
       if poll.status == "Pass" && poll.majority =="yes"
         notified_model = poll.group
         params = {:recipients => {}}
-        params[:recipients][:user_ids] = JSON.parse( poll.additional_data["user_ids"])
-        params[:recipients][:emails] = JSON.parse( poll.additional_data["emails"])
+        params[:recipients][:user_ids] = poll.additional_data["user_ids"]
+        params[:recipients][:emails] = poll.additional_data["emails"]
         params[:kind] = "group_announced"
         AnnouncementService.create(model: notified_model, params: params, actor: poll.user)
       end
