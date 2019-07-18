@@ -35,6 +35,9 @@ module.exports = class UserRecordsInterface extends BaseRecordsInterface
       path: 'email_status'
       params: _.pick {email: email, token: token}, _.identity
 
+  getUserName: (user) ->
+    @remote.post 'get_name', {user_id: user}
+
 
 
   

@@ -60,6 +60,21 @@ class API::ProfileController < API::RestfulController
     respond_with_resource(serializer: Pending::UserSerializer, scope: {has_token: has_membership_token?})
   end
 
+  def get_name
+    @user = User.find(params[:user_id])
+    if @user.name == nil
+      @name = @user.email
+    else
+      @name = @user.name
+    end
+    #respond_with_resource name : @name
+    # respond_to do |f|
+    #   f.json {render json: {:name => @name, :status => 200}.as_json}
+    # end
+    # debugger
+    render json: {name: @name, status: 200}
+  end
+
   private
 
   def accessible_records
@@ -106,4 +121,6 @@ class API::ProfileController < API::RestfulController
   def service
     UserService
   end
+
+  
 end

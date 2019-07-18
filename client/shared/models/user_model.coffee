@@ -130,3 +130,5 @@ module.exports = class UserModel extends BaseModel
 
   belongsToPayingGroup: ->
     _.any @groups(), (group) -> group.subscriptionKind == 'paid'
+  
+

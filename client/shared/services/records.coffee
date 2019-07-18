@@ -28,6 +28,7 @@ records.addRecordsInterface require('shared/interfaces/stance_records_interface'
 records.addRecordsInterface require('shared/interfaces/stance_choice_records_interface')
 records.addRecordsInterface require('shared/interfaces/outcome_records_interface')
 records.addRecordsInterface require('shared/interfaces/poll_categories_interface')
+records.addRecordsInterface require('shared/interfaces/poll_categories_records_interface')
 # records.addRecordsInterface require('shared/interfaces/poll_groups_interface')
 records.addRecordsInterface require('shared/interfaces/poll_did_not_vote_records_interface')
 records.addRecordsInterface require('shared/interfaces/identity_records_interface')
