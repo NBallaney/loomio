@@ -184,22 +184,28 @@ angular.module('loomioApp').directive 'pollCommonDetailsPanel', ->
           else
             "Group: #{$scope.groupArray[$scope.poll.additionalData.group_id]==undefined && "Secret Group" || $scope.groupArray[$scope.poll.additionalData.group_id]}"
       else if $scope.poll.pollCategoryName == "Invite Member" 
-        if $scope.usersArray.length !=0
+        
           if $scope.poll.additionalData
+          
             users = ''
-            angular.forEach $scope.poll.additionalData.user_ids, (value) ->
-              if users.trim() == ''
-                connector = ""
-              else
-                connector = ", "
-              users = users+connector+$scope.usersArray[value]
             angular.forEach $scope.poll.additionalData.emails, (value) ->
               if users.trim() == ''
                 connector = ""
               else
                 connector = ", "
               users = users+connector+value
-            "Members: "+users
+            if $scope.poll.additionalData.user_ids.length !=0  
+              if $scope.usersArray.length !=0
+                angular.forEach $scope.poll.additionalData.user_ids, (value) ->
+                  if users.trim() == ''
+                    connector = ""
+                  else
+                    connector = ", "
+                  users = users+connector+$scope.usersArray[value]
+                
+                "Members: "+users
+            else
+              "Members: "+users
       else if $scope.poll.pollCategoryName == "Modify Consensus Thresholds"
         if $scope.poll.additionalData 
           html_text = ''
@@ -268,6 +274,14 @@ angular.module('loomioApp').directive 'pollCommonDetailsPanel', ->
           else if pollcategoryname == "Invite Member"        
             if $scope.poll.additionalData
               users = ''
+              angular.forEach polldetails.emails, (value) ->
+                  $scope.usersArray[value]=value
+                  if users.trim() == ''
+                    connector = ""
+                  else
+                    connector = ", "
+                  users = users+connector+value
+                  return
               if $scope.usersArray.length != 0
                 angular.forEach polldetails.user_ids, (value) ->
                   if users.trim() == ''
@@ -276,13 +290,9 @@ angular.module('loomioApp').directive 'pollCommonDetailsPanel', ->
                     connector = ", "
                   users = users+connector+$scope.usersArray[value]  
                   return
-                angular.forEach polldetails.emails, (value) ->
-                  if users.trim() == ''
-                    connector = ""
-                  else
-                    connector = ", "
-                  users = users+connector+value
-                  return         
+                         
+                detail_text+="Members: "+users
+              else
                 detail_text+="Members: "+users
           else if pollcategoryname == "Modify Consensus Thresholds"
             if $scope.poll.additionalData 

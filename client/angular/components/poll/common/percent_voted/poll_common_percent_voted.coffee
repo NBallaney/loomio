@@ -14,15 +14,19 @@ angular.module('loomioApp').directive 'pollCommonPercentVoted', ->
     $scope.run = false
     $scope.pollOptionNames = ->
       ['agree', 'abstain', 'disagree', 'block']
+    # $scope.totalCount = ->
+    #   2
     $scope.poll.total_count = 0
     if !$scope.run
-      Records.polls.fetchById($scope.poll.key).then((res) ->                   
+      Records.polls.fetchById($scope.poll.key).then((res) -> 
+            # console.log res                  
             angular.forEach $scope.pollOptionNames(), (value, key) -> 
               $scope.alliancedecsionvotes[value] = 0
             angular.forEach res.polls[0].alliance_decision_votes, (value, key) -> 
               $scope.alliancedecsionvotes[value.vote] = $scope.alliancedecsionvotes[value.vote]+1
               $scope.poll.total_count++
             $scope.poll.total_count=$scope.poll.total_count+$scope.poll.stanceCounts
+            # console.log $scope.alliancedecsionvotes
         ) 
       $scope.run = true
       
