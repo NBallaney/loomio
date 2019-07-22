@@ -289,8 +289,7 @@ angular.module('loomioApp').directive 'pollCommonDetailsPanel', ->
                   else
                     connector = ", "
                   users = users+connector+$scope.usersArray[value]  
-                  return
-                         
+                  return                         
                 detail_text+="Members: "+users
               else
                 detail_text+="Members: "+users
