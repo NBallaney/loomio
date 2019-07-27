@@ -155,8 +155,8 @@ angular.module('loomioApp').directive 'pollCommonDetailsPanel', ->
 
     $scope.getGroupDetail = ->
       if $scope.poll.pollCategoryName == "Alliance Decision"
-        # console.log($scope.poll)
         "Parent Group: #{ $scope.groupArray[$scope.poll.parentGroupId] }"
+
       else if $scope.poll.pollCategoryName == "Forge Alliance"
         if $scope.poll.additionalData
           if $scope.poll.additionalData.parent == true
@@ -247,7 +247,6 @@ angular.module('loomioApp').directive 'pollCommonDetailsPanel', ->
           # return pollcategoryname
           # console.log "Poll Category Name Is -> "+pollcategoryname
           if pollcategoryname == "Alliance Decision"
-            # console.log($scope.poll)
             "Parent Group: #{ $scope.groupArray[$scope.poll.parentGroupId]==undefined && "Secret Group" || $scope.groupArray[$scope.poll.parentGroupId] }"
           else if pollcategoryname == "Forge Alliance"
             if $scope.poll.additionalData

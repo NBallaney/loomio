@@ -7,6 +7,7 @@ angular.module('loomioApp').directive 'pollCommonPercentVoted', ->
   controller: ['$scope', ($scope) ->
     $scope.alliancedecsionvotes= []
     $scope.run = false
+    $scope.recordGroups = []
     $scope.pollOptionNames = ->
       ['agree', 'abstain', 'disagree', 'block']
     $scope.poll.total_count = 0
@@ -18,16 +19,18 @@ angular.module('loomioApp').directive 'pollCommonPercentVoted', ->
     #   2
     $scope.poll.total_count = 0
     if !$scope.run
-      Records.polls.fetchById($scope.poll.key).then((res) -> 
-            # console.log res                  
+      Records.polls.fetchById($scope.poll.key).then((res) ->                  
             angular.forEach $scope.pollOptionNames(), (value, key) -> 
               $scope.alliancedecsionvotes[value] = 0
             angular.forEach res.polls[0].alliance_decision_votes, (value, key) -> 
               $scope.alliancedecsionvotes[value.vote] = $scope.alliancedecsionvotes[value.vote]+1
               $scope.poll.total_count++
-            $scope.poll.total_count=$scope.poll.total_count+$scope.poll.stanceCounts
+            $scope.poll.total_count=$scope.poll.total_count+$scope.poll.stancesCount
             # console.log $scope.alliancedecsionvotes
         ) 
+      Records.groups.fetchChildGroups($scope.poll.groupId).then (groups) ->
+        $scope.recordGroups = groups.groups
+        $scope.percent_voted = Math.round(($scope.poll.total_count/($scope.poll.membersCount()+$scope.recordGroups.length))*100)
       $scope.run = true
       
 

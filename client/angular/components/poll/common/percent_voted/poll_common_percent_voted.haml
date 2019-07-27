@@ -1,2 +1,2 @@
-.poll-common-percent-voted.lmo-hint-text{ng-if: "poll.membersCount() > 0"}
-  %span{translate: "poll_common_percent_voted.sentence", translate-value-numerator: "{{poll.stancesCount}}", translate-value-denominator: "{{poll.membersCount()}}", translate-value-percent: "{{poll.percentVoted()}}"}
+.poll-common-percent-voted.lmo-hint-text{ng-if: "poll.membersCount() > 0 && run == true "}
+  %span{translate: "poll_common_percent_voted.sentence", translate-value-numerator: "{{poll.total_count}}", translate-value-denominator: "{{poll.membersCount()+recordGroups.length}}", translate-value-percent: "{{percent_voted}}"}
