@@ -80,7 +80,7 @@ angular.module('loomioApp').directive 'pollCommonDetailsPanel', ->
         $scope.category_att[value.id] = value.name
         $scope.main_Cat[value.id] = value.name
 
-    if !$scope.membersFetched
+    if !$scope.membersFetched && $scope.poll.additionalData != null
       if $scope.poll.additionalData.apd_data2
         if $scope.poll.additionalData.apd_data2.user_ids
           userids = $scope.poll.additionalData.apd_data2.user_ids
@@ -98,7 +98,7 @@ angular.module('loomioApp').directive 'pollCommonDetailsPanel', ->
         # console.log $scope.usersArray
 
 
-    if !$scope.categoryFetched
+    if !$scope.categoryFetched && $scope.poll.additionalData != null
       # console.log $scope.poll.additionalData
       if $scope.poll.additionalData.apd_data2
         if $scope.poll.additionalData.apd_data1.poll_category_id
@@ -155,7 +155,9 @@ angular.module('loomioApp').directive 'pollCommonDetailsPanel', ->
 
     $scope.getGroupDetail = ->
       if $scope.poll.pollCategoryName == "Alliance Decision"
+        "Category Name: #{ $scope.poll.pollCategoryName }"
         "Parent Group: #{ $scope.groupArray[$scope.poll.parentGroupId] }"
+        
 
       else if $scope.poll.pollCategoryName == "Forge Alliance"
         if $scope.poll.additionalData
@@ -218,7 +220,6 @@ angular.module('loomioApp').directive 'pollCommonDetailsPanel', ->
           ""
       else if $scope.poll.pollCategoryName == "Alliance Parent Decision"
         if $scope.categoryFetched
-          console.log $scope.poll.additionalData
           html_text="Source Group: #{$scope.groupArray[$scope.poll.groupId]==undefined && "Secret Group" || $scope.groupArray[$scope.poll.groupId]} <br/> Parent Group 1: #{$scope.groupArray[$scope.poll.additionalData.group_id]==undefined && "Secret Group" || $scope.groupArray[$scope.poll.additionalData.group_id]}<br/>"
 
           if $scope.poll.additionalData.apd_data2
@@ -247,6 +248,7 @@ angular.module('loomioApp').directive 'pollCommonDetailsPanel', ->
           # return pollcategoryname
           # console.log "Poll Category Name Is -> "+pollcategoryname
           if pollcategoryname == "Alliance Decision"
+            "Category Name: #{ pollcategoryname }"
             "Parent Group: #{ $scope.groupArray[$scope.poll.parentGroupId]==undefined && "Secret Group" || $scope.groupArray[$scope.poll.parentGroupId] }"
           else if pollcategoryname == "Forge Alliance"
             if $scope.poll.additionalData
